@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core'
+import { GameBoardComponent } from './game-board/game-board.component'
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  imports: [GameBoardComponent],
 })
 export class AppComponent {
-  title = 'sudoku-app';
+  title = 'sudoku-app'
+
+  
 }

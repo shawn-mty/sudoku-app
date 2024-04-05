@@ -30,8 +30,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/tailwindcss/tailwind.css"
+              "src/styles.scss"
             ],
             "scripts": []
           },
