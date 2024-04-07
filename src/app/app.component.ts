@@ -10,10 +10,17 @@ import { NumberInputComponent } from './number-input/number-input.component'
   imports: [GameBoardComponent, NumberInputComponent],
 })
 export class AppComponent {
-  currentSelectedNumber: SelectedNumber | null = null
+  currentSelectedNumber: number | null = null
+  currentSelectedCanadidateNumber: number | null = null
 
   onNumberSelected(selectedNumber: SelectedNumber): void {
     console.log('Number selected:', selectedNumber.number, 'Mode:', selectedNumber.mode)
-    this.currentSelectedNumber = selectedNumber
+    if (selectedNumber.mode === 'normal') {
+      this.currentSelectedNumber = selectedNumber.number
+      this.currentSelectedCanadidateNumber = null
+    } else if (selectedNumber.mode === 'candidate') {
+      this.currentSelectedCanadidateNumber = selectedNumber.number
+      this.currentSelectedNumber = null
+    }
   }
 }

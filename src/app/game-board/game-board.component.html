@@ -1,13 +1,18 @@
-<!-- Inside your component template -->
+<div *ngIf="loading" class="grid p-4 w-full max-w-lg mx-auto gap-1">
+  <div *ngFor="let row of [].constructor(9); let rowIndex = index" class="grid grid-cols-9 gap-1">
+    <div
+      *ngFor="let cell of [].constructor(9); let cellIndex = index"
+      class="border border-gray-600 flex justify-center items-center h-12 w-12 bg-gray-800 animate-pulse"
+    ></div>
+  </div>
+</div>
 <div *ngIf="!loading" class="grid p-4 w-full max-w-lg mx-auto gap-1">
   <div *ngFor="let row of board; let rowIndex = index" class="grid grid-cols-9 gap-1">
     <div
       *ngFor="let cell of row; let cellIndex = index"
-      class="border border-gray-400 flex justify-center items-center h-12 w-12 cursor-pointer"
+      class="border border-gray-400 flex justify-center items-center h-12 w-12 cursor-pointer hover:bg-gray-800"
       [ngClass]="{
-        'bg-blue-200': rowIndex === selectedRowIndex && cellIndex === selectedCellIndex,
-        'border-b-4 border-b-gray-600': rowIndex % 3 === 2 && rowIndex !== board.length - 1,
-        'border-r-4 border-r-gray-600': cellIndex % 3 === 2 && cellIndex !== row.length - 1
+        'bg-gray-800': rowIndex === selectedRowIndex && cellIndex === selectedCellIndex
       }"
       (click)="cellClicked(rowIndex, cellIndex)"
     >

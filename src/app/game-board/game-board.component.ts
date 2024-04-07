@@ -1,6 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CommonModule } from '@angular/common'
+
+type Candidate = {
+  [K in 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9]: boolean
+}
 
 @Component({
   selector: 'app-game-board',
@@ -9,18 +13,27 @@ import { CommonModule } from '@angular/common'
   styleUrls: ['./game-board.component.scss'],
   imports: [CommonModule],
 })
-export class GameBoardComponent implements OnInit {
-  @Input() selectedNumber: SelectedNumber | null = null
+export class GameBoardComponent implements OnInit, OnChanges {
+  @Input() selectedNumber: number | null = null
 
   selectedRowIndex: number | null = null
   selectedCellIndex: number | null = null
   board: number[][] = []
+  candidateBoard: Candidate[][] = []
   loading: boolean = false
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.fetchPuzzle()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedNumber']) {
+      this.updateCellWithSelectedNumber()
+      this.selectedCellIndex = null
+      this.selectedRowIndex = null
+    }
   }
 
   fetchPuzzle(): void {
@@ -33,16 +46,23 @@ export class GameBoardComponent implements OnInit {
       })
   }
 
-  selectCell(number: number): void {
-    if (this.selectedRowIndex !== null && this.selectedCellIndex !== null) {
-      this.board[this.selectedRowIndex][this.selectedCellIndex] = number
-    }
-  }
-
   cellClicked(rowIndex: number, cellIndex: number): void {
     this.selectedRowIndex = rowIndex
     this.selectedCellIndex = cellIndex
-    console.log(`Cell clicked: Row ${rowIndex}, Column ${cellIndex}`)
+    this.updateCellWithSelectedNumber()
+  }
+
+  updateCellWithSelectedNumber(): void {
+    if (
+      this.selectedRowIndex !== null &&
+      this.selectedCellIndex !== null &&
+      this.selectedNumber !== null
+    ) {
+      this.board[this.selectedRowIndex][this.selectedCellIndex] = this.selectedNumber
+      console.log(
+        `Updated Row ${this.selectedRowIndex}, Column ${this.selectedCellIndex} with ${this.selectedNumber}`,
+      )
+    }
   }
 
   validatePuzzle(): void {
@@ -58,7 +78,6 @@ export class GameBoardComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log(response)
-
           if (response.status === 'solved') {
             console.log('Puzzle is correctly solved!')
           } else {
