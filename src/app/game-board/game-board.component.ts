@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { NgIf, NgFor, NgClass } from '@angular/common'
+import { Component, OnInit, Input } from '@angular/core'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { CommonModule } from '@angular/common'
 
 @Component({
   selector: 'app-game-board',
   standalone: true,
   templateUrl: './game-board.component.html',
   styleUrls: ['./game-board.component.scss'],
-  imports: [NgIf, NgFor, NgClass],
+  imports: [CommonModule],
 })
 export class GameBoardComponent implements OnInit {
-  puzzle: number[][] = []
+  @Input() selectedNumber: SelectedNumber | null = null
+
+  selectedRowIndex: number | null = null
+  selectedCellIndex: number | null = null
+  board: number[][] = []
   loading: boolean = false
 
   constructor(private http: HttpClient) {}
@@ -24,13 +28,46 @@ export class GameBoardComponent implements OnInit {
     this.http
       .get<any>('https://sugoku.onrender.com/board?difficulty=easy')
       .subscribe((response) => {
-        this.puzzle = response.board
+        this.board = response.board
         this.loading = false
       })
   }
 
+  selectCell(number: number): void {
+    if (this.selectedRowIndex !== null && this.selectedCellIndex !== null) {
+      this.board[this.selectedRowIndex][this.selectedCellIndex] = number
+    }
+  }
+
   cellClicked(rowIndex: number, cellIndex: number): void {
+    this.selectedRowIndex = rowIndex
+    this.selectedCellIndex = cellIndex
     console.log(`Cell clicked: Row ${rowIndex}, Column ${cellIndex}`)
-    // Here, you can add logic to manipulate the cell or perform other actions
+  }
+
+  validatePuzzle(): void {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    })
+
+    const body = new URLSearchParams()
+    body.set('board', JSON.stringify(this.board))
+
+    this.http
+      .post<any>('https://sugoku.onrender.com/validate', body.toString(), { headers })
+      .subscribe({
+        next: (response) => {
+          console.log(response)
+
+          if (response.status === 'solved') {
+            console.log('Puzzle is correctly solved!')
+          } else {
+            console.log('Puzzle is not solved correctly. Status:', response.status)
+          }
+        },
+        error: (err) => {
+          console.error('Validation error:', err)
+        },
+      })
   }
 }

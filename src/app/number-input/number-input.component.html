@@ -1,1 +1,29 @@
-<p>number-input works!</p>
+<div class="p-4">
+  <div class="flex space-x-4 mb-4">
+    <button
+      class="flex-1 p-2 text-white"
+      [class.bg-blue-500]="mode !== 'normal'"
+      [class.bg-blue-700]="mode === 'normal'"
+      (click)="setMode('normal')"
+    >
+      Normal
+    </button>
+    <button
+      class="flex-1 p-2 text-white"
+      [class.bg-blue-500]="mode !== 'candidate'"
+      [class.bg-blue-700]="mode === 'candidate'"
+      (click)="setMode('candidate')"
+    >
+      Candidate
+    </button>
+  </div>
+  <div class="grid grid-cols-3 gap-2">
+    <button
+      *ngFor="let number of numbers"
+      (click)="selectNumber(number)"
+      class="h-10 w-10 bg-gray-200 flex items-center justify-center rounded-md text-lg hover:bg-gray-300"
+    >
+      {{ number }}
+    </button>
+  </div>
+</div>

@@ -1,11 +1,12 @@
-<div *ngIf="loading" class="text-center p-4">Loading puzzle...</div>
-<div *ngIf="!loading" class="grid p-4 w-full max-w-lg mx-auto">
-  <div *ngFor="let row of puzzle; let rowIndex = index" class="grid grid-cols-9 gap-1">
+<!-- Inside your component template -->
+<div *ngIf="!loading" class="grid p-4 w-full max-w-lg mx-auto gap-1">
+  <div *ngFor="let row of board; let rowIndex = index" class="grid grid-cols-9 gap-1">
     <div
       *ngFor="let cell of row; let cellIndex = index"
       class="border border-gray-400 flex justify-center items-center h-12 w-12 cursor-pointer"
       [ngClass]="{
-        'border-b-4 border-b-gray-600': rowIndex % 3 === 2 && rowIndex !== puzzle.length - 1,
+        'bg-blue-200': rowIndex === selectedRowIndex && cellIndex === selectedCellIndex,
+        'border-b-4 border-b-gray-600': rowIndex % 3 === 2 && rowIndex !== board.length - 1,
         'border-r-4 border-r-gray-600': cellIndex % 3 === 2 && cellIndex !== row.length - 1
       }"
       (click)="cellClicked(rowIndex, cellIndex)"

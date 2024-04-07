@@ -1,5 +1,8 @@
 <style></style>
 
 <main class="bg-black">
-  <div><app-game-board></app-game-board></div>
+  <div>
+    <app-game-board [selectedNumber]="currentSelectedNumber" />
+    <app-number-input (numberSelected)="onNumberSelected($event)" />
+  </div>
 </main>
