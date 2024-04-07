@@ -1,4 +1,4 @@
-<div class="p-4">
+<div class="py-4 px-6 w-full max-w-lg mx-auto">
   <div class="flex space-x-4 mb-4">
     <button
       class="flex-1 p-2 text-white"
@@ -17,11 +17,11 @@
       Candidate
     </button>
   </div>
-  <div class="grid grid-cols-3 gap-2">
+  <div class="grid grid-cols-3 gap-3 mt-5 max-w-fit mx-auto">
     <button
       *ngFor="let number of numbers"
       (click)="selectNumber(number)"
-      class="h-10 w-10 bg-gray-800 flex items-center justify-center rounded-md text-lg hover:bg-gray-600"
+      class="h-10 w-10 bg-gray-800 rounded-md text-lg hover:bg-gray-60 justify-self-center"
     >
       {{ number }}
     </button>

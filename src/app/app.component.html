@@ -1,7 +1,7 @@
 <style></style>
 
 <main class="bg-black">
-  <div>
+  <div class="flex justify-center py-6 flex-wrap">
     <app-game-board [selectedNumber]="currentSelectedNumber" />
     <app-number-input (numberSelected)="onNumberSelected($event)" />
   </div>
