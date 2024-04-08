@@ -2,8 +2,10 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/cor
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CommonModule } from '@angular/common'
 
-type Candidate = {
-  [K in 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9]: boolean
+type CandidateNumber = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+
+type CandidateCell = {
+  [K in CandidateNumber]: boolean
 }
 
 @Component({
@@ -15,11 +17,13 @@ type Candidate = {
 })
 export class GameBoardComponent implements OnInit, OnChanges {
   @Input() selectedNumber: number | null = null
+  @Input() selectedCandidateNumber: string | null = null
 
+  candidateNumbers: CandidateNumber[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   selectedRowIndex: number | null = null
-  selectedCellIndex: number | null = null
+  selectedColIndex: number | null = null
   board: number[][] = []
-  candidateBoard: Candidate[][] = []
+  candidateBoard: CandidateCell[][] = []
   loading: boolean = false
 
   constructor(private http: HttpClient) {}
@@ -31,8 +35,20 @@ export class GameBoardComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedNumber']) {
       this.updateCellWithSelectedNumber()
-      this.selectedCellIndex = null
       this.selectedRowIndex = null
+      this.selectedColIndex = null
+    }
+    if (changes['selectedCandidateNumber']) {
+      this.updateCellWithSelectedCandidateNumber()
+    }
+  }
+
+  resetCellCandidateNumbers() {
+    if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
+      const cell = this.candidateBoard[this.selectedRowIndex][this.selectedColIndex]
+      Object.keys(cell).forEach((key) => {
+        cell[key as CandidateNumber] = false
+      })
     }
   }
 
@@ -42,27 +58,67 @@ export class GameBoardComponent implements OnInit, OnChanges {
       .get<any>('https://sugoku.onrender.com/board?difficulty=easy')
       .subscribe((response) => {
         this.board = response.board
+        this.initializeCandidateBoard()
         this.loading = false
       })
   }
 
   cellClicked(rowIndex: number, cellIndex: number): void {
     this.selectedRowIndex = rowIndex
-    this.selectedCellIndex = cellIndex
-    this.updateCellWithSelectedNumber()
+    this.selectedColIndex = cellIndex
+    this.selectedNumber = null
+  }
+
+  initializeCandidateBoard(): void {
+    this.candidateBoard = Array(9)
+      .fill(null)
+      .map(() =>
+        Array(9)
+          .fill(null)
+          .map(() => ({
+            1: false,
+            2: false,
+            3: false,
+            4: false,
+            5: false,
+            6: false,
+            7: false,
+            8: false,
+            9: false,
+          })),
+      )
+  }
+
+  updateCellWithSelectedCandidateNumber(): void {
+    if (
+      this.selectedRowIndex !== null &&
+      this.selectedColIndex !== null &&
+      this.selectedCandidateNumber !== null
+    ) {
+      const currentCandidateCell = this.candidateBoard[this.selectedRowIndex][
+        this.selectedColIndex
+      ] as CandidateCell
+      currentCandidateCell[this.selectedCandidateNumber as CandidateNumber] = true
+    }
   }
 
   updateCellWithSelectedNumber(): void {
     if (
       this.selectedRowIndex !== null &&
-      this.selectedCellIndex !== null &&
+      this.selectedColIndex !== null &&
       this.selectedNumber !== null
     ) {
-      this.board[this.selectedRowIndex][this.selectedCellIndex] = this.selectedNumber
-      console.log(
-        `Updated Row ${this.selectedRowIndex}, Column ${this.selectedCellIndex} with ${this.selectedNumber}`,
-      )
+      this.board[this.selectedRowIndex][this.selectedColIndex] = this.selectedNumber
+
+      if (this.isBoardFull()) {
+        console.log('Board is full, validating the puzzle.')
+        this.validatePuzzle()
+      }
     }
+  }
+
+  isBoardFull(): boolean {
+    return this.board.every((row) => row.every((cell) => cell !== 0))
   }
 
   validatePuzzle(): void {
@@ -77,7 +133,6 @@ export class GameBoardComponent implements OnInit, OnChanges {
       .post<any>('https://sugoku.onrender.com/validate', body.toString(), { headers })
       .subscribe({
         next: (response) => {
-          console.log(response)
           if (response.status === 'solved') {
             console.log('Puzzle is correctly solved!')
           } else {

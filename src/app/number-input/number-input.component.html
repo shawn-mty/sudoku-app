@@ -1,29 +1,40 @@
-<div class="py-4 px-6 w-full max-w-lg mx-auto">
-  <div class="flex space-x-4 mb-4">
-    <button
-      class="flex-1 p-2 text-white"
-      [class.bg-gray-500]="mode !== 'normal'"
-      [class.bg-gray-700]="mode === 'normal'"
-      (click)="setMode('normal')"
-    >
-      Normal
-    </button>
-    <button
-      class="flex-1 p-2 text-white"
-      [class.bg-gray-500]="mode !== 'candidate'"
-      [class.bg-gray-700]="mode === 'candidate'"
-      (click)="setMode('candidate')"
-    >
-      Candidate
-    </button>
-  </div>
-  <div class="grid grid-cols-3 gap-3 mt-5 max-w-fit mx-auto">
-    <button
-      *ngFor="let number of numbers"
-      (click)="selectNumber(number)"
-      class="h-10 w-10 bg-gray-800 rounded-md text-lg hover:bg-gray-60 justify-self-center"
-    >
-      {{ number }}
-    </button>
+<div class="py-4 px-6 w-full max-w-xl mx-auto flex justify-between">
+  <div class="px-6">
+    <div class="flex space-x-4 mb-5">
+      <button
+        class="flex-1 p-2 text-white"
+        [class.bg-gray-500]="selectedMode !== 'normal'"
+        [class.bg-gray-900]="selectedMode === 'normal'"
+        (click)="setMode('normal')"
+      >
+        Normal
+      </button>
+      <button
+        class="flex-1 p-2 text-white"
+        [class.bg-gray-500]="selectedMode !== 'candidate'"
+        [class.bg-gray-900]="selectedMode === 'candidate'"
+        (click)="setMode('candidate')"
+      >
+        Candidate
+      </button>
+    </div>
+    <div class="grid grid-cols-3 gap-7 mt-5 max-w-fit mx-auto">
+      <button
+        *ngFor="let number of numbers"
+        (click)="selectNumber(number)"
+        class="h-10 w-10 bg-gray-800 text-lg hover:bg-gray-60 justify-self-center"
+      >
+        {{ number }}
+      </button>
+    </div>
+    <div class="flex justify-center py-4 h-20 mt-4">
+      <button
+        *ngIf="selectedMode === 'candidate'"
+        class="bg-gray-800 text-white px-2 w-24"
+        (click)="resetCellCandidateNumbers.emit()"
+      >
+        Reset
+      </button>
+    </div>
   </div>
 </div>

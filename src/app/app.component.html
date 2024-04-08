@@ -1,8 +1,14 @@
 <style></style>
 
 <main class="bg-black">
-  <div class="flex justify-center py-6 flex-wrap">
-    <app-game-board [selectedNumber]="currentSelectedNumber" />
-    <app-number-input (numberSelected)="onNumberSelected($event)" />
+  <div class="flex justify-center md:py-6 flex-wrap items-center">
+    <app-game-board
+      [selectedNumber]="currentSelectedNumber"
+      [selectedCandidateNumber]="currentSelectedCandidateNumber"
+    />
+    <app-number-input
+      (numberSelected)="onNumberSelected($event)"
+      (resetCellCandidateNumbers)="resetCellCandidateNumbers()"
+    />
   </div>
 </main>
