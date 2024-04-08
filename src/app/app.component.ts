@@ -3,13 +3,20 @@ import { CommonModule } from '@angular/common'
 import { GameBoardComponent } from './game-board/game-board.component'
 import { NumberInputComponent } from './number-input/number-input.component'
 import { GameStartComponent } from './game-start/game-start.component'
+import { GameActionsComponent } from './game-actions/game-actions.component'
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [GameBoardComponent, NumberInputComponent, GameStartComponent, CommonModule],
+  imports: [
+    GameBoardComponent,
+    NumberInputComponent,
+    GameStartComponent,
+    GameActionsComponent,
+    CommonModule,
+  ],
 })
 export class AppComponent {
   @ViewChild(GameBoardComponent) GameBoard!: GameBoardComponent
@@ -34,5 +41,15 @@ export class AppComponent {
   fetchPuzzle(difficulty: Difficulty): void {
     this.hasChosenDifficulty = true
     this.GameBoard.fetchPuzzle(difficulty)
+  }
+
+  validatePuzzle(): void {
+    console.log('Validating the puzzle...')
+    // Add your puzzle validation logic here
+  }
+
+  autoSolvePuzzle(): void {
+    console.log('Auto-solving the puzzle...')
+    // Add your puzzle solving logic here
   }
 }

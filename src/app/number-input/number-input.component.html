@@ -4,6 +4,8 @@
       <button
         class="flex-1 p-2 text-white"
         [class.bg-gray-500]="selectedMode !== 'normal'"
+        [class.hover-animate]="selectedMode !== 'normal'"
+        [class.hover:bg-gray-700]="selectedMode !== 'normal'"
         [class.bg-gray-900]="selectedMode === 'normal'"
         (click)="setMode('normal')"
       >
@@ -12,6 +14,8 @@
       <button
         class="flex-1 p-2 text-white"
         [class.bg-gray-500]="selectedMode !== 'candidate'"
+        [class.hover-animate]="selectedMode !== 'candidate'"
+        [class.hover:bg-gray-700]="selectedMode !== 'candidate'"
         [class.bg-gray-900]="selectedMode === 'candidate'"
         (click)="setMode('candidate')"
       >
@@ -22,13 +26,18 @@
       <button
         *ngFor="let number of numbers"
         (click)="selectNumber(number)"
-        class="h-10 w-10 bg-gray-800 text-lg hover:bg-gray-60 justify-self-center"
+        class="hover-animate h-10 w-10 bg-gray-600 text-lg hover:bg-gray-800 justify-self-center"
       >
         {{ number }}
       </button>
     </div>
     <div class="flex justify-center py-4 h-20 mt-4">
-      <button class="bg-gray-800 text-white px-2 w-24" (click)="reset()">Reset</button>
+      <button
+        class="hover-animate bg-gray-700 hover:bg-gray-800 text-white px-2 w-24"
+        (click)="reset()"
+      >
+        Reset
+      </button>
     </div>
   </div>
 </div>
