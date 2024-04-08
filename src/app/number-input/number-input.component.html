@@ -28,13 +28,7 @@
       </button>
     </div>
     <div class="flex justify-center py-4 h-20 mt-4">
-      <button
-        *ngIf="selectedMode === 'candidate'"
-        class="bg-gray-800 text-white px-2 w-24"
-        (click)="resetCellCandidateNumbers.emit()"
-      >
-        Reset
-      </button>
+      <button class="bg-gray-800 text-white px-2 w-24" (click)="reset()">Reset</button>
     </div>
   </div>
 </div>

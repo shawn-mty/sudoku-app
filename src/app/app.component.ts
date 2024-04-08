@@ -23,4 +23,8 @@ export class AppComponent {
   resetCellCandidateNumbers(): void {
     this.GameBoard.resetCellCandidateNumbers()
   }
+
+  resetCellNumber(): void {
+    this.GameBoard.resetCellNumber()
+  }
 }

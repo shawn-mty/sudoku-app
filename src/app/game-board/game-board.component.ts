@@ -29,12 +29,18 @@ export class GameBoardComponent implements OnInit {
     this.fetchPuzzle()
   }
 
-  resetCellCandidateNumbers() {
+  resetCellCandidateNumbers(): void {
     if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
       const cell = this.candidateBoard[this.selectedRowIndex][this.selectedColIndex]
       Object.keys(cell).forEach((key) => {
         cell[key as CandidateNumber] = false
       })
+    }
+  }
+
+  resetCellNumber() {
+    if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
+      this.board[this.selectedRowIndex][this.selectedColIndex] = 0
     }
   }
 
