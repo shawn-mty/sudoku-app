@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core'
+import { Component, OnInit, OnChanges } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CommonModule } from '@angular/common'
 
@@ -15,10 +15,7 @@ type CandidateCell = {
   styleUrls: ['./game-board.component.scss'],
   imports: [CommonModule],
 })
-export class GameBoardComponent implements OnInit, OnChanges {
-  @Input() selectedNumber: number | null = null
-  @Input() selectedCandidateNumber: string | null = null
-
+export class GameBoardComponent implements OnInit {
   candidateNumbers: CandidateNumber[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   selectedRowIndex: number | null = null
   selectedColIndex: number | null = null
@@ -30,17 +27,6 @@ export class GameBoardComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.fetchPuzzle()
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedNumber']) {
-      this.updateCellWithSelectedNumber()
-      this.selectedRowIndex = null
-      this.selectedColIndex = null
-    }
-    if (changes['selectedCandidateNumber']) {
-      this.updateCellWithSelectedCandidateNumber()
-    }
   }
 
   resetCellCandidateNumbers() {
@@ -66,7 +52,6 @@ export class GameBoardComponent implements OnInit, OnChanges {
   cellClicked(rowIndex: number, cellIndex: number): void {
     this.selectedRowIndex = rowIndex
     this.selectedColIndex = cellIndex
-    this.selectedNumber = null
   }
 
   initializeCandidateBoard(): void {
@@ -89,26 +74,22 @@ export class GameBoardComponent implements OnInit, OnChanges {
       )
   }
 
-  updateCellWithSelectedCandidateNumber(): void {
-    if (
-      this.selectedRowIndex !== null &&
-      this.selectedColIndex !== null &&
-      this.selectedCandidateNumber !== null
-    ) {
+  updateCellWithSelectedCandidateNumber(selectedCandidateNumber: string): void {
+    if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
       const currentCandidateCell = this.candidateBoard[this.selectedRowIndex][
         this.selectedColIndex
       ] as CandidateCell
-      currentCandidateCell[this.selectedCandidateNumber as CandidateNumber] = true
+      currentCandidateCell[selectedCandidateNumber as CandidateNumber] = true
     }
   }
 
-  updateCellWithSelectedNumber(): void {
+  updateCellWithSelectedNumber(selectedNumber: number): void {
     if (
       this.selectedRowIndex !== null &&
       this.selectedColIndex !== null &&
-      this.selectedNumber !== null
+      selectedNumber !== null
     ) {
-      this.board[this.selectedRowIndex][this.selectedColIndex] = this.selectedNumber
+      this.board[this.selectedRowIndex][this.selectedColIndex] = selectedNumber
 
       if (this.isBoardFull()) {
         console.log('Board is full, validating the puzzle.')

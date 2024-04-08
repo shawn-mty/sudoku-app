@@ -11,17 +11,12 @@ import { NumberInputComponent } from './number-input/number-input.component'
 })
 export class AppComponent {
   @ViewChild(GameBoardComponent) GameBoard!: GameBoardComponent
-  currentSelectedNumber: number | null = null
-  currentSelectedCandidateNumber: string | null = null
 
   onNumberSelected(selectedNumber: SelectedNumber): void {
-
     if (selectedNumber.mode === 'normal') {
-      this.currentSelectedNumber = selectedNumber.number
-      this.currentSelectedCandidateNumber = null
+      this.GameBoard.updateCellWithSelectedNumber(selectedNumber.number)
     } else if (selectedNumber.mode === 'candidate') {
-      this.currentSelectedCandidateNumber = selectedNumber.number.toString()
-      this.currentSelectedNumber = null
+      this.GameBoard.updateCellWithSelectedCandidateNumber(selectedNumber.number.toString())
     }
   }
 

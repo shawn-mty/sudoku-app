@@ -14,7 +14,6 @@ export class NumberInputComponent {
   @Output() numberSelected = new EventEmitter<{ number: number; mode: InputMode }>()
   @Output() resetCellCandidateNumbers = new EventEmitter<void>()
   selectedMode: InputMode = 'normal'
-  selectedNumber: number | null = null
   numbers: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
   setMode(mode: InputMode): void {
@@ -23,6 +22,5 @@ export class NumberInputComponent {
 
   selectNumber(number: number): void {
     this.numberSelected.emit({ number, mode: this.selectedMode })
-    this.selectedNumber = null
   }
 }
