@@ -20,6 +20,7 @@ export class GameBoardComponent implements OnInit {
   selectedRowIndex: number | null = null
   selectedColIndex: number | null = null
   board: number[][] = []
+  originalBoard: number[][] = []
   candidateBoard: CandidateCell[][] = []
   loading: boolean = false
 
@@ -50,14 +51,20 @@ export class GameBoardComponent implements OnInit {
       .get<any>('https://sugoku.onrender.com/board?difficulty=easy')
       .subscribe((response) => {
         this.board = response.board
+        this.originalBoard = response.board.map((innerArray: number[]) => [...innerArray])
+
         this.initializeCandidateBoard()
         this.loading = false
       })
   }
 
-  cellClicked(rowIndex: number, cellIndex: number): void {
+  cellClicked(rowIndex: number, colIndex: number): void {
+    if (rowIndex !== null && colIndex !== null && this.originalBoard[rowIndex][colIndex] !== 0) {
+      return
+    }
+
     this.selectedRowIndex = rowIndex
-    this.selectedColIndex = cellIndex
+    this.selectedColIndex = colIndex
   }
 
   initializeCandidateBoard(): void {
