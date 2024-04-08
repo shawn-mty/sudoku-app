@@ -13,6 +13,11 @@ type BoardResponse = {
 type ValidateResponse = {
   status: 'solved' | 'broken'
 }
+type SolveResponse = {
+  difficulty: Difficulty
+  solution: Board
+  status: 'solved' | 'broken' | 'unsolvable'
+}
 
 @Component({
   selector: 'app-game-board',
@@ -108,7 +113,7 @@ export class GameBoardComponent {
 
       if (this.isBoardFull()) {
         console.log('Board is full, validating the puzzle.')
-        this.validatePuzzle()
+        this.validate()
       }
     }
   }
@@ -117,7 +122,7 @@ export class GameBoardComponent {
     return this.board.every((row) => row.every((cell) => cell !== 0))
   }
 
-  validatePuzzle(): void {
+  validate(): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     })
@@ -137,6 +142,26 @@ export class GameBoardComponent {
         },
         error: (err) => {
           console.error('Validation error:', err)
+        },
+      })
+  }
+
+  autoSolve(): void {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    })
+
+    const body = new URLSearchParams()
+    body.set('board', JSON.stringify(this.originalBoard))
+
+    this.http
+      .post<SolveResponse>('https://sugoku.onrender.com/solve', body.toString(), { headers })
+      .subscribe({
+        next: (response) => {
+          this.board = response.solution
+        },
+        error: (err) => {
+          console.error('Auto solve error:', err)
         },
       })
   }

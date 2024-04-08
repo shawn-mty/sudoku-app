@@ -5,11 +5,7 @@
     <app-game-start *ngIf="!hasChosenDifficulty" (difficultySelected)="fetchPuzzle($event)" />
     <div class="flex justify-center flex-col items-center">
       <app-game-board [class.visible]="hasChosenDifficulty" />
-      <app-game-actions
-        *ngIf="hasChosenDifficulty"
-        (validate)="validatePuzzle()"
-        (solve)="autoSolvePuzzle()"
-      />
+      <app-game-actions *ngIf="hasChosenDifficulty" (validate)="validate()" (solve)="autoSolve()" />
     </div>
     <app-number-input
       *ngIf="hasChosenDifficulty"

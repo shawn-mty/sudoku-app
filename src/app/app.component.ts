@@ -43,13 +43,11 @@ export class AppComponent {
     this.GameBoard.fetchPuzzle(difficulty)
   }
 
-  validatePuzzle(): void {
-    console.log('Validating the puzzle...')
-    // Add your puzzle validation logic here
+  validate(): void {
+    this.GameBoard.validate()
   }
 
-  autoSolvePuzzle(): void {
-    console.log('Auto-solving the puzzle...')
-    // Add your puzzle solving logic here
+  autoSolve(): void {
+    this.GameBoard.autoSolve()
   }
 }
