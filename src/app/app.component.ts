@@ -22,11 +22,11 @@ export class AppComponent {
   hasChosenDifficulty = false
 
   onNumberSelected(selectedNumber: SelectedNumber): void {
-    if (selectedNumber.mode === 'normal') {
-      this.GameBoard.updateCellWithSelectedNumber(selectedNumber.number)
-    } else if (selectedNumber.mode === 'candidate') {
-      this.GameBoard.updateCellWithSelectedCandidateNumber(selectedNumber.number.toString())
-    }
+    this.GameBoard.updateCellWithSelectedNumber(selectedNumber.number)
+  }
+
+  onCandidateNumberSelected(selectedNumber: SelectedCandidateNumber): void {
+    this.GameBoard.updateCellWithSelectedCandidateNumber(selectedNumber.number)
   }
 
   resetCellCandidateNumbers(): void {

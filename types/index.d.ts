@@ -3,6 +3,10 @@ declare global {
     number: number
     mode: string
   }
+  type SelectedCandidateNumber = {
+    number: string
+    mode: string
+  }
 
   type Difficulty = 'easy' | 'medium' | 'hard' | 'random'
 }
