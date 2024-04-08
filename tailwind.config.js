@@ -7,11 +7,11 @@ module.exports = {
       colors: {
         darkGray: '#1f1f1f',
         charcoal: '#333333',
-        brightPurple: '#bf00ff',
         white: '#ffffff',
+        black: '#000000',
+        brightPurple: '#bf00ff',
         deepPurple: '#43268b',
         darkPurple: '#2b003a',
-        black: '#000000',
       },
     },
   },

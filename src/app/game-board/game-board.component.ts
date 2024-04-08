@@ -1,11 +1,17 @@
-import { Component, OnInit, OnChanges } from '@angular/core'
+import { Component } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CommonModule } from '@angular/common'
 
 type CandidateNumber = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-
 type CandidateCell = {
   [K in CandidateNumber]: boolean
+}
+type Board = Array<Array<number>>
+type BoardResponse = {
+  board: Board
+}
+type ValidateResponse = {
+  status: 'solved' | 'broken'
 }
 
 @Component({
@@ -15,20 +21,16 @@ type CandidateCell = {
   styleUrls: ['./game-board.component.scss'],
   imports: [CommonModule],
 })
-export class GameBoardComponent implements OnInit {
+export class GameBoardComponent {
   candidateNumbers: CandidateNumber[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   selectedRowIndex: number | null = null
   selectedColIndex: number | null = null
-  board: number[][] = []
-  originalBoard: number[][] = []
+  board: Board = []
+  originalBoard: Board = []
   candidateBoard: CandidateCell[][] = []
   loading: boolean = false
 
   constructor(private http: HttpClient) {}
-
-  ngOnInit(): void {
-    this.fetchPuzzle()
-  }
 
   resetCellCandidateNumbers(): void {
     if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
@@ -45,10 +47,10 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
-  fetchPuzzle(): void {
+  fetchPuzzle(difficulty: Difficulty): void {
     this.loading = true
     this.http
-      .get<any>('https://sugoku.onrender.com/board?difficulty=easy')
+      .get<BoardResponse>(`https://sugoku.onrender.com/board?difficulty=${difficulty}`)
       .subscribe((response) => {
         this.board = response.board
         this.originalBoard = response.board.map((innerArray: number[]) => [...innerArray])
@@ -124,7 +126,7 @@ export class GameBoardComponent implements OnInit {
     body.set('board', JSON.stringify(this.board))
 
     this.http
-      .post<any>('https://sugoku.onrender.com/validate', body.toString(), { headers })
+      .post<ValidateResponse>('https://sugoku.onrender.com/validate', body.toString(), { headers })
       .subscribe({
         next: (response) => {
           if (response.status === 'solved') {

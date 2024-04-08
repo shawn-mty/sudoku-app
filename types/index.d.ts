@@ -3,6 +3,8 @@ declare global {
     number: number
     mode: string
   }
+
+  type Difficulty = 'easy' | 'medium' | 'hard' | 'random'
 }
 
 export {}

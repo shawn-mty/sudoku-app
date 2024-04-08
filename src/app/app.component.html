@@ -2,8 +2,10 @@
 
 <main class="bg-black">
   <div class="flex justify-center md:py-6 flex-wrap items-center">
-    <app-game-board />
+    <app-game-start *ngIf="!hasChosenDifficulty" (difficultySelected)="fetchPuzzle($event)" />
+    <app-game-board [class.visible]="hasChosenDifficulty" />
     <app-number-input
+      *ngIf="hasChosenDifficulty"
       (numberSelected)="onNumberSelected($event)"
       (resetCellCandidateNumbers)="resetCellCandidateNumbers()"
       (resetCellNumber)="resetCellNumber()"
