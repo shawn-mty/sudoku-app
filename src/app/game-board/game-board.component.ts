@@ -23,7 +23,6 @@ type SolveResponse = {
   selector: 'app-game-board',
   standalone: true,
   templateUrl: './game-board.component.html',
-  styleUrls: ['./game-board.component.scss'],
   imports: [CommonModule],
 })
 export class GameBoardComponent {

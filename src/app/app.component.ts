@@ -9,7 +9,6 @@ import { GameActionsComponent } from './game-actions/game-actions.component'
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
   imports: [
     GameBoardComponent,
     NumberInputComponent,

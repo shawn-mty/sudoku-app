@@ -6,7 +6,6 @@ import { Component, EventEmitter, Output } from '@angular/core'
   imports: [CommonModule],
   selector: 'app-game-start',
   templateUrl: './game-start.component.html',
-  styleUrls: ['./game-start.component.scss'],
 })
 export class GameStartComponent {
   @Output() difficultySelected = new EventEmitter<Difficulty>()

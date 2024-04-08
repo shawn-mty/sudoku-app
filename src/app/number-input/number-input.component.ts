@@ -6,7 +6,6 @@ type InputMode = 'normal' | 'candidate'
 @Component({
   selector: 'app-number-input',
   templateUrl: './number-input.component.html',
-  styleUrls: ['./number-input.component.scss'],
   standalone: true,
   imports: [CommonModule],
 })
