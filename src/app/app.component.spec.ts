@@ -79,7 +79,7 @@ describe('AppComponent Integration Tests', () => {
     expect(within(numberInput).getByText(/Candidate/i)).toBeVisible()
     expect(within(numberInput).getByText(/Normal/i)).toBeVisible()
 
-    const gameActions = await findByTestId('game-actions')
+    const gameActions = getByTestId('game-actions')
     expect(within(gameActions).getByText(/Validate/i)).toBeVisible()
     expect(within(gameActions).getByText(/Auto Solve/i)).toBeVisible()
   })
@@ -101,43 +101,63 @@ describe('AppComponent Integration Tests', () => {
   })
 
   it('should overwrite candidate numbers in a selected square with a normal number', async () => {
-    const cell = await screen.findByTestId('cell-0-2')
-    await insertCandidateNumbers(cell, '4', '5')
-    expect(cell.textContent).toContain('4')
-    expect(cell.textContent).toContain('5')
+    const cellTestId = 'cell-0-2'
+    const candidateNum1 = '4'
+    const candidateNum2 = '5'
+    const normalNum = '9'
+    const cell = await screen.findByTestId(cellTestId)
+    const gameBoard = getByTestId('game-board')
 
-    const gameBoard = await findByTestId('game-board')
-    await insertNormalNumber(gameBoard, 'cell-0-2', '9')
+    await insertCandidateNumbers(cell, candidateNum1, candidateNum2)
+    expect(cell.textContent).toContain(candidateNum1)
+    expect(cell.textContent).toContain(candidateNum2)
 
-    const numberText = within(within(gameBoard).getByTestId('cell-0-2')).getByText('9')
+    await insertNormalNumber(gameBoard, cellTestId, normalNum)
+    const numberText = within(within(gameBoard).getByTestId(cellTestId)).getByText(normalNum)
     expect(numberText).toBeVisible()
 
-    expect(within(cell).queryByText('4')).toBeNull()
-    expect(within(cell).queryByText('5')).toBeNull()
+    expect(within(cell).queryByText(candidateNum1)).toBeNull()
+    expect(within(cell).queryByText(candidateNum2)).toBeNull()
   })
 
-  // it('should reset a normal number in a square cell that is not part of the original board', async () => {
-  //   const cell = await screen.findByTestId('cell-0-2')
-  //   await userEvent.click(cell, { button: 2 }) // Right-click if needed
+  it('should reset a normal number in a square cell that is not part of the original board', async () => {
+    const normalNum = '8'
+    const cellTestId = 'cell-0-4'
+    const originalBoardCellTestId = 'cell-0-0'
+    const gameBoard = await findByTestId('game-board')
+    const cell = getByTestId(cellTestId)
+    const originalBoardCell = getByTestId(originalBoardCellTestId)
+    const numberInput = getByTestId('number-input')
 
-  //   expect(cell.textContent).toBeEmpty()
-  // })
+    await insertNormalNumber(gameBoard, originalBoardCellTestId, normalNum)
+    expect(within(originalBoardCell).queryByText(normalNum)).toBeNull()
 
-  // it('should reset candidate numbers in a square cell that is not part of the original board', async () => {
-  //   const cell = await screen.findByTestId('cell-0-3')
-  //   await userEvent.click(cell, { button: 2 }) // Right-click if needed
+    await insertNormalNumber(gameBoard, cellTestId, normalNum)
+    const numberText = within(within(gameBoard).getByTestId(cellTestId)).getByText(normalNum)
+    expect(numberText).toBeVisible()
 
-  //   expect(cell.textContent).toBeEmpty()
-  // })
+    await userEvent.click(within(numberInput).getByText(/Reset/i))
+    expect(within(cell).queryByText(normalNum)).toBeNull()
+  })
 
-  // it("should validate the board and display a 'solved' status", async () => {
-  //   const validateButton = await screen.findByText(/Validate/i)
-  //   await userEvent.click(validateButton)
-  //   // Assume some text appears after validation
-  //   const status = await screen.findByText('Puzzle is correctly solved!')
+  it('should reset candidate numbers in a square cell that is not part of the original board', async () => {
+    const cellTestId = 'cell-0-4'
+    const gameBoard = await findByTestId('game-board')
+    const numberInput = getByTestId('number-input')
+    const candidateNum1 = '1'
+    const candidateNum2 = '2'
 
-  //   expect(status).toBeVisible()
-  // })
+    const cell = await within(gameBoard).findByTestId(cellTestId)
+    await insertCandidateNumbers(cell, candidateNum1, candidateNum2)
+    expect(cell.textContent).toContain(candidateNum1)
+    expect(cell.textContent).toContain(candidateNum2)
+
+    await userEvent.click(within(numberInput).getByText(/Reset/i))
+    expect(within(cell).queryByText(candidateNum1)).toBeNull()
+    expect(within(cell).queryByText(candidateNum2)).toBeNull()
+  })
+
+ 
 })
 
 /*
