@@ -8,34 +8,7 @@ import {
 } from '@angular/common/http/testing'
 import { AppComponent } from './app.component'
 const { queryByTestId, findByTestId, getByTestId, findByText, getByText } = screen
-
-const dummyBoard = [
-  [6, 0, 0, 0, 0, 0, 4, 7, 0],
-  [1, 0, 3, 4, 0, 8, 0, 0, 9],
-  [0, 7, 0, 0, 6, 0, 0, 2, 0],
-  [2, 0, 0, 0, 3, 5, 0, 0, 0],
-  [0, 0, 0, 0, 9, 0, 2, 0, 0],
-  [7, 0, 9, 0, 2, 4, 0, 5, 0],
-  [0, 3, 1, 7, 0, 0, 9, 0, 2],
-  [8, 0, 2, 0, 5, 0, 0, 4, 0],
-  [9, 0, 7, 2, 0, 1, 0, 0, 5],
-]
-
-const dummySolvedResponse = {
-  difficulty: 'easy',
-  solution: [
-    [6, 9, 5, 3, 1, 2, 4, 7, 8],
-    [1, 2, 3, 4, 7, 8, 5, 6, 9],
-    [4, 7, 8, 5, 6, 9, 1, 2, 3],
-    [2, 1, 4, 6, 3, 5, 8, 9, 7],
-    [3, 5, 6, 8, 9, 7, 2, 1, 4],
-    [7, 8, 9, 1, 2, 4, 3, 5, 6],
-    [5, 3, 1, 7, 4, 6, 9, 8, 2],
-    [8, 6, 2, 9, 5, 3, 7, 4, 1],
-    [9, 4, 7, 2, 8, 1, 6, 3, 5],
-  ],
-  status: 'solved',
-}
+import { dummyBoard, dummySolvedResponse } from '@/testData'
 
 describe('AppComponent Integration Tests', () => {
   let httpMock: HttpTestingController

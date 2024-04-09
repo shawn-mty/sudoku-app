@@ -1,22 +1,32 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { render, screen } from '@testing-library/angular'
+import { NumberInputComponent } from './number-input.component'
+import userEvent from '@testing-library/user-event'
+const { getByRole } = screen
 
-// import { NumberInputComponent } from './number-input.component'
+describe('GameStartComponent', () => {
+  it('should render buttons correctly', async () => {
+    await render(NumberInputComponent)
 
-// describe('NumberInputComponent', () => {
-//   let component: NumberInputComponent
-//   let fixture: ComponentFixture<NumberInputComponent>
+    expect(getByRole('button', { name: /Normal/i })).toBeVisible()
+    expect(getByRole('button', { name: /Candidate/i })).toBeVisible()
 
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       imports: [NumberInputComponent],
-//     }).compileComponents()
+    for (let i = 1; i <= 9; i++) {
+      expect(getByRole('button', { name: i.toString() })).toBeVisible()
+    }
+  })
 
-//     fixture = TestBed.createComponent(NumberInputComponent)
-//     component = fixture.componentInstance
-//     fixture.detectChanges()
-//   })
+  it('should change to primary gray when choosing between normal and candidate buttons', async () => {
+    await render(NumberInputComponent)
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy()
-//   })
-// })
+    const selectedButtonClass = 'bg-gray-900'
+    const normalButton = getByRole('button', { name: /Normal/i })
+    const candidateButton = getByRole('button', { name: /Candidate/i })
+
+    expect(normalButton).toHaveClass(selectedButtonClass)
+    expect(candidateButton).not.toHaveClass(selectedButtonClass)
+
+    await userEvent.click(candidateButton)
+    expect(normalButton).not.toHaveClass(selectedButtonClass)
+    expect(candidateButton).toHaveClass(selectedButtonClass)
+  })
+})

@@ -1,22 +1,16 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { render, screen } from '@testing-library/angular'
+import { GameStartComponent } from './game-start.component'
+const { getByRole } = screen
 
-// import { GameStartComponent } from './game-start.component'
+describe('GameStartComponent', () => {
+  it('should render buttons and content', async () => {
+    await render(GameStartComponent)
 
-// describe('GameStartComponent', () => {
-//   let component: GameStartComponent
-//   let fixture: ComponentFixture<GameStartComponent>
-
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       imports: [GameStartComponent],
-//     }).compileComponents()
-
-//     fixture = TestBed.createComponent(GameStartComponent)
-//     component = fixture.componentInstance
-//     fixture.detectChanges()
-//   })
-
-//   it('should create', () => {
-//     expect(component).toBeTruthy()
-//   })
-// })
+    expect(getByRole('heading', { name: /Sudoku/i })).toBeVisible()
+    expect(getByRole('heading', { name: /Select Difficulty/i })).toBeVisible()
+    expect(getByRole('button', { name: /Easy/i })).toBeVisible()
+    expect(getByRole('button', { name: /Medium/i })).toBeVisible()
+    expect(getByRole('button', { name: /Hard/i })).toBeVisible()
+    expect(getByRole('button', { name: /Random/i })).toBeVisible()
+  })
+})
