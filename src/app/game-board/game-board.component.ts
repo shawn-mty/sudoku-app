@@ -1,6 +1,7 @@
 import { Component } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CommonModule } from '@angular/common'
+import { GameActionsComponent } from '@/game-actions/game-actions.component'
 
 type CandidateNumber = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 type CandidateCell = {
@@ -21,13 +22,11 @@ type SolveResponse = {
   status: 'solved' | 'broken' | 'unsolvable'
 }
 
-type Status = 'unsolved' | 'solved' | 'broken' | 'unsolvable'
-
 @Component({
   selector: 'app-game-board',
   standalone: true,
   templateUrl: './game-board.component.html',
-  imports: [CommonModule],
+  imports: [CommonModule, GameActionsComponent],
 })
 export class GameBoardComponent {
   candidateNumbers: CandidateNumber[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -71,6 +70,9 @@ export class GameBoardComponent {
 
   resetBoard() {
     this.board = this.originalBoard.map((innerArray: number[]) => [...innerArray])
+    this.initializeCandidateBoard()
+    this.selectedRowIndex = null
+    this.selectedColIndex = null
     this.status = 'unsolved'
   }
 

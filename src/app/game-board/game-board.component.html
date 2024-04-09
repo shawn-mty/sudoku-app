@@ -43,3 +43,11 @@
     {{ computedStatus }}
   </span>
 </div>
+<div class="flex justify-center">
+  <app-game-actions
+    (validate)="validate()"
+    (solve)="autoSolve()"
+    (resetBoard)="resetBoard()"
+    [status]="status"
+  />
+</div>

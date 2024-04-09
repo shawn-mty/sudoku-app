@@ -1,11 +1,8 @@
-<style></style>
-
 <main class="bg-black">
   <div class="flex justify-center md:py-6 flex-wrap items-center">
     <app-game-start *ngIf="!hasChosenDifficulty" (difficultySelected)="fetchPuzzle($event)" />
     <div class="flex justify-center flex-col items-center">
       <app-game-board [class.hidden]="!hasChosenDifficulty" />
-      <app-game-actions *ngIf="hasChosenDifficulty" (validate)="validate()" (solve)="autoSolve()" />
     </div>
     <app-number-input
       *ngIf="hasChosenDifficulty"

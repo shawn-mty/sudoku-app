@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core'
+import { Component, EventEmitter, Output, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 
 @Component({
@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common'
   standalone: true,
 })
 export class GameActionsComponent {
+  @Input() status: Status = 'unsolved'
   @Output() validate = new EventEmitter<void>()
   @Output() solve = new EventEmitter<void>()
+  @Output() resetBoard = new EventEmitter<void>()
 }

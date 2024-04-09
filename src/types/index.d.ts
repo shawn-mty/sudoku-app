@@ -9,6 +9,8 @@ declare global {
   }
 
   type Difficulty = 'easy' | 'medium' | 'hard' | 'random'
+
+  type Status = 'unsolved' | 'solved' | 'broken' | 'unsolvable'
 }
 
 export {}
