@@ -48,6 +48,24 @@ describe('AppComponent Integration Tests', () => {
     })
   })
 
+  const insertNormalNumber = async (gameBoard: HTMLElement, testId: string, number: string) => {
+    await userEvent.click(within(gameBoard).getByTestId(testId))
+
+    const numberInput = await findByTestId('number-input')
+    await userEvent.click(within(numberInput).getByText(/Normal/i))
+    const numberButton = within(numberInput).getByText(number)
+    await userEvent.click(numberButton)
+  }
+
+  const insertCandidateNumbers = async (cell: Element, num1: string, num2: string) => {
+    await userEvent.click(cell)
+
+    const numberInput = await findByTestId('number-input')
+    await userEvent.click(within(numberInput).getByText(/Candidate/i))
+    await userEvent.click(within(numberInput).getByText(num1))
+    await userEvent.click(within(numberInput).getByText(num2))
+  }
+
   it('should reflect the chosen difficulty in the API call and render the game board and number input components after game start', async () => {
     expect(boardRequest.request.method).toEqual('GET')
 
@@ -68,24 +86,11 @@ describe('AppComponent Integration Tests', () => {
 
   it('should update a selected square with a normal number', async () => {
     const gameBoard = await findByTestId('game-board')
-    await userEvent.click(within(gameBoard).getByTestId('cell-0-1'))
-
-    const numberInput = await findByTestId('number-input')
-    const numberButton = within(numberInput).getByText('5')
-    await userEvent.click(numberButton)
+    await insertNormalNumber(gameBoard, 'cell-0-1', '5')
 
     const numberText = within(within(gameBoard).getByTestId('cell-0-1')).getByText('5')
     expect(numberText).toBeVisible()
   })
-
-  const insertCandidateNumbers = async (cell: Element, num1: string, num2: string) => {
-    await userEvent.click(cell)
-
-    const numberInput = await findByTestId('number-input')
-    await userEvent.click(within(numberInput).getByText(/Candidate/i))
-    await userEvent.click(within(numberInput).getByText(num1))
-    await userEvent.click(within(numberInput).getByText(num2))
-  }
 
   it('should update a selected square with multiple candidate numbers', async () => {
     const cell = await screen.findByTestId('cell-0-2')
@@ -100,6 +105,15 @@ describe('AppComponent Integration Tests', () => {
     await insertCandidateNumbers(cell, '4', '5')
     expect(cell.textContent).toContain('4')
     expect(cell.textContent).toContain('5')
+
+    const gameBoard = await findByTestId('game-board')
+    await insertNormalNumber(gameBoard, 'cell-0-2', '9')
+
+    const numberText = within(within(gameBoard).getByTestId('cell-0-2')).getByText('9')
+    expect(numberText).toBeVisible()
+
+    expect(within(cell).queryByText('4')).toBeNull()
+    expect(within(cell).queryByText('5')).toBeNull()
   })
 
   // it('should reset a normal number in a square cell that is not part of the original board', async () => {
