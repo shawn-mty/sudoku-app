@@ -38,8 +38,8 @@
     </div>
   </div>
 </div>
-<div class="min-h-12 flex justify-center pt-2" [ngClass]="{ 'animate-pulse': status !== 'broken' }">
+<div class="min-h-12 flex justify-center pt-2" [ngClass]="{ 'animate-pulse': status === 'solved' }">
   <span class="text-fuchsia-600 text-lg">
-    {{ status === 'broken' ? 'You can do it!' : 'Congrats, you win!' }}
+    {{ computedStatus }}
   </span>
 </div>

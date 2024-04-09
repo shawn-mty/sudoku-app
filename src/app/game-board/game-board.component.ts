@@ -11,7 +11,7 @@ export type BoardResponse = {
   board: Board
 }
 
-type ValidateStatus = 'solved' | 'broken'
+type ValidateStatus = 'solved' | 'unsolved' | 'broken'
 type ValidateResponse = {
   status: ValidateStatus
 }
@@ -20,6 +20,8 @@ type SolveResponse = {
   solution: Board
   status: 'solved' | 'broken' | 'unsolvable'
 }
+
+type Status = 'unsolved' | 'solved' | 'broken' | 'unsolvable'
 
 @Component({
   selector: 'app-game-board',
@@ -35,7 +37,20 @@ export class GameBoardComponent {
   originalBoard: Board = []
   candidateBoard: CandidateCell[][] = []
   loading: boolean = false
-  status: ValidateStatus = 'broken'
+  status: Status = 'unsolved'
+
+  get computedStatus() {
+    switch (this.status) {
+      case 'solved':
+        return 'Congrats, you win!'
+      case 'unsolved':
+        return "Let's go!"
+      case 'broken':
+        return 'Not quite, keep it up!'
+      case 'unsolvable':
+        return 'Try resetting the board and starting over'
+    }
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -52,6 +67,11 @@ export class GameBoardComponent {
     if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
       this.board[this.selectedRowIndex][this.selectedColIndex] = 0
     }
+  }
+
+  resetBoard() {
+    this.board = this.originalBoard.map((innerArray: number[]) => [...innerArray])
+    this.status = 'unsolved'
   }
 
   fetchPuzzle(difficulty: Difficulty): void {
@@ -156,6 +176,7 @@ export class GameBoardComponent {
       .subscribe({
         next: (response) => {
           this.board = response.solution
+          this.status = response.status
         },
         error: (err) => {
           console.error('Auto solve error:', err)
