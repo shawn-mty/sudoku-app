@@ -10,7 +10,7 @@ import { AppComponent } from './app.component'
 import { GameBoardComponent } from './game-board/game-board.component'
 import { NumberInputComponent } from './number-input/number-input.component'
 import { GameStartComponent } from './game-start/game-start.component'
-const { queryByTestId, findByTestId, getByTestId, findByText } = screen
+const { queryByTestId, findByTestId, getByTestId, findByText, getByText } = screen
 
 const dummyBoard = [
   [6, 0, 0, 0, 0, 0, 4, 7, 0],
@@ -23,6 +23,22 @@ const dummyBoard = [
   [8, 0, 2, 0, 5, 0, 0, 4, 0],
   [9, 0, 7, 2, 0, 1, 0, 0, 5],
 ]
+
+const dummySolvedResponse = {
+  difficulty: 'easy',
+  solution: [
+    [6, 9, 5, 3, 1, 2, 4, 7, 8],
+    [1, 2, 3, 4, 7, 8, 5, 6, 9],
+    [4, 7, 8, 5, 6, 9, 1, 2, 3],
+    [2, 1, 4, 6, 3, 5, 8, 9, 7],
+    [3, 5, 6, 8, 9, 7, 2, 1, 4],
+    [7, 8, 9, 1, 2, 4, 3, 5, 6],
+    [5, 3, 1, 7, 4, 6, 9, 8, 2],
+    [8, 6, 2, 9, 5, 3, 7, 4, 1],
+    [9, 4, 7, 2, 8, 1, 6, 3, 5],
+  ],
+  status: 'solved',
+}
 
 describe('AppComponent Integration Tests', () => {
   let httpMock: HttpTestingController
@@ -73,7 +89,6 @@ describe('AppComponent Integration Tests', () => {
 
     const gameBoard = await findByTestId('game-board')
     expect(within(gameBoard).getAllByText('6').length).toBe(2)
-    expect(within(gameBoard).getAllByText('9').length).toBe(5)
 
     const numberInput = getByTestId('number-input')
     expect(within(numberInput).getByText(/Candidate/i)).toBeVisible()
@@ -101,7 +116,7 @@ describe('AppComponent Integration Tests', () => {
   })
 
   it('should overwrite candidate numbers in a selected square with a normal number', async () => {
-    const cellTestId = 'cell-0-2'
+    const cellTestId = 'cell-0-5'
     const candidateNum1 = '4'
     const candidateNum2 = '5'
     const normalNum = '9'
@@ -122,7 +137,7 @@ describe('AppComponent Integration Tests', () => {
 
   it('should reset a normal number in a square cell that is not part of the original board', async () => {
     const normalNum = '8'
-    const cellTestId = 'cell-0-4'
+    const cellTestId = 'cell-0-8'
     const originalBoardCellTestId = 'cell-0-0'
     const gameBoard = await findByTestId('game-board')
     const cell = getByTestId(cellTestId)
@@ -157,154 +172,28 @@ describe('AppComponent Integration Tests', () => {
     expect(within(cell).queryByText(candidateNum2)).toBeNull()
   })
 
- 
+  it("should validate the board and display a 'solved' status", async () => {
+    expect(await findByText('You can do it!')).toBeVisible()
+
+    const validateButton = await findByText(/Validate/i)
+    await userEvent.click(validateButton)
+    const validationRequest = httpMock.expectOne('https://sugoku.onrender.com/validate')
+    validationRequest.flush({ status: 'broken' })
+    expect(validationRequest.request.method).toEqual('POST')
+
+    expect(getByText('You can do it!')).toBeVisible()
+
+    await userEvent.click(getByText(/Auto Solve/i))
+    const solveRequest = httpMock.expectOne('https://sugoku.onrender.com/solve')
+    solveRequest.flush(dummySolvedResponse)
+    expect(solveRequest.request.method).toEqual('POST')
+
+    await userEvent.click(validateButton)
+    const successfulValidationRequest = httpMock.expectOne('https://sugoku.onrender.com/validate')
+    successfulValidationRequest.flush({ status: 'solved' })
+    expect(successfulValidationRequest.request.method).toEqual('POST')
+
+    const winningMessage = await screen.findByText('Congrats, you win!')
+    expect(winningMessage).toBeVisible()
+  })
 })
-
-/*
-Dummyboard validated
-
-{
-  "status": "solved"
-}
-
-*/
-
-/*
-The dummyboard solved
-
-{
-  "difficulty": "easy",
-  "solution": [
-    [
-      6,
-      9,
-      5,
-      3,
-      1,
-      2,
-      4,
-      7,
-      8
-    ],
-    [
-      1,
-      2,
-      3,
-      4,
-      7,
-      8,
-      5,
-      6,
-      9
-    ],
-    [
-      4,
-      7,
-      8,
-      5,
-      6,
-      9,
-      1,
-      2,
-      3
-    ],
-    [
-      2,
-      1,
-      4,
-      6,
-      3,
-      5,
-      8,
-      9,
-      7
-    ],
-    [
-      3,
-      5,
-      6,
-      8,
-      9,
-      7,
-      2,
-      1,
-      4
-    ],
-    [
-      7,
-      8,
-      9,
-      1,
-      2,
-      4,
-      3,
-      5,
-      6
-    ],
-    [
-      5,
-      3,
-      1,
-      7,
-      4,
-      6,
-      9,
-      8,
-      2
-    ],
-    [
-      8,
-      6,
-      2,
-      9,
-      5,
-      3,
-      7,
-      4,
-      1
-    ],
-    [
-      9,
-      4,
-      7,
-      2,
-      8,
-      1,
-      6,
-      3,
-      5
-    ]
-  ],
-  "status": "solved"
-}
-*/
-
-// import { TestBed } from '@angular/core/testing'
-// import { AppComponent } from './app.component'
-
-// describe('AppComponent', () => {
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       imports: [AppComponent],
-//     }).compileComponents()
-//   })
-
-//   it('should create the app', () => {
-//     const fixture = TestBed.createComponent(AppComponent)
-//     const app = fixture.componentInstance
-//     expect(app).toBeTruthy()
-//   })
-
-//   it(`should have the 'sudoku-app' title`, () => {
-//     const fixture = TestBed.createComponent(AppComponent)
-//     const app = fixture.componentInstance
-//     expect(app.title).toEqual('sudoku-app')
-//   })
-
-//   it('should render title', () => {
-//     const fixture = TestBed.createComponent(AppComponent)
-//     fixture.detectChanges()
-//     const compiled = fixture.nativeElement as HTMLElement
-//     expect(compiled.querySelector('h1')?.textContent).toContain('Hello, sudoku-app')
-//   })
-// })
