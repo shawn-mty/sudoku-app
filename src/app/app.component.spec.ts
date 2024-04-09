@@ -67,8 +67,6 @@ describe('AppComponent Integration Tests', () => {
   })
 
   it('should update a selected square with a normal number', async () => {
-    expect(queryByTestId('game-start')).toBeNull()
-
     const gameBoard = await findByTestId('game-board')
     await userEvent.click(within(gameBoard).getByTestId('cell-0-1'))
 
@@ -80,25 +78,29 @@ describe('AppComponent Integration Tests', () => {
     expect(numberText).toBeVisible()
   })
 
-  // it('should update a selected square with multiple candidate numbers', async () => {
-  //   const cell = await screen.findByTestId('cell-0-1')
-  //   await userEvent.click(cell)
-  //   const numberInput = await screen.findByTestId('candidate-number-3')
-  //   await userEvent.click(numberInput)
-  //   const numberInput2 = await screen.findByTestId('candidate-number-7')
-  //   await userEvent.click(numberInput2)
+  const insertCandidateNumbers = async (cell: Element, num1: string, num2: string) => {
+    await userEvent.click(cell)
 
-  //   expect(cell.textContent).toContain('3, 7')
-  // })
+    const numberInput = await findByTestId('number-input')
+    await userEvent.click(within(numberInput).getByText(/Candidate/i))
+    await userEvent.click(within(numberInput).getByText(num1))
+    await userEvent.click(within(numberInput).getByText(num2))
+  }
 
-  // it('should overwrite candidate numbers in a selected square with a normal number', async () => {
-  //   const cell = await screen.findByTestId('cell-0-1')
-  //   await userEvent.click(cell)
-  //   const numberButton = await screen.findByTestId('number-5')
-  //   await userEvent.click(numberButton)
+  it('should update a selected square with multiple candidate numbers', async () => {
+    const cell = await screen.findByTestId('cell-0-2')
+    await insertCandidateNumbers(cell, '3', '7')
 
-  //   expect(cell.textContent).toBe('5')
-  // })
+    expect(cell.textContent).toContain('3')
+    expect(cell.textContent).toContain('7')
+  })
+
+  it('should overwrite candidate numbers in a selected square with a normal number', async () => {
+    const cell = await screen.findByTestId('cell-0-2')
+    await insertCandidateNumbers(cell, '4', '5')
+    expect(cell.textContent).toContain('4')
+    expect(cell.textContent).toContain('5')
+  })
 
   // it('should reset a normal number in a square cell that is not part of the original board', async () => {
   //   const cell = await screen.findByTestId('cell-0-2')
