@@ -10,8 +10,10 @@ type Board = Array<Array<number>>
 export type BoardResponse = {
   board: Board
 }
+
+type ValidateStatus = 'solved' | 'broken'
 type ValidateResponse = {
-  status: 'solved' | 'broken'
+  status: ValidateStatus
 }
 type SolveResponse = {
   difficulty: Difficulty
@@ -33,6 +35,7 @@ export class GameBoardComponent {
   originalBoard: Board = []
   candidateBoard: CandidateCell[][] = []
   loading: boolean = false
+  status: ValidateStatus = 'broken'
 
   constructor(private http: HttpClient) {}
 
@@ -132,11 +135,7 @@ export class GameBoardComponent {
       .post<ValidateResponse>('https://sugoku.onrender.com/validate', body.toString(), { headers })
       .subscribe({
         next: (response) => {
-          if (response.status === 'solved') {
-            console.log('Puzzle is correctly solved!')
-          } else {
-            console.log('Puzzle is not solved correctly. Status:', response.status)
-          }
+          this.status = response.status
         },
         error: (err) => {
           console.error('Validation error:', err)
