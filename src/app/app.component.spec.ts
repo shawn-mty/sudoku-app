@@ -7,9 +7,6 @@ import {
   TestRequest,
 } from '@angular/common/http/testing'
 import { AppComponent } from './app.component'
-import { GameBoardComponent } from './game-board/game-board.component'
-import { NumberInputComponent } from './number-input/number-input.component'
-import { GameStartComponent } from './game-start/game-start.component'
 const { queryByTestId, findByTestId, getByTestId, findByText, getByText } = screen
 
 const dummyBoard = [
@@ -46,12 +43,7 @@ describe('AppComponent Integration Tests', () => {
 
   beforeEach(async () => {
     await render(AppComponent, {
-      imports: [
-        GameBoardComponent,
-        NumberInputComponent,
-        GameStartComponent,
-        HttpClientTestingModule,
-      ],
+      imports: [HttpClientTestingModule],
     })
 
     httpMock = TestBed.inject(HttpTestingController)

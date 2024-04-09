@@ -21,7 +21,7 @@
 1. `it("should render number input buttons correctly")`
 
 ### Gameboard
-1. `it("should render gameboard action buttons correctly")`
+1. `it("should render gameboard cells correctly")`
 2. `it("should display all candidate numbers correctly")`
 3. `it("should display normal numbers correctly")`
 4. `it("should highlight a cell when clicked")`
