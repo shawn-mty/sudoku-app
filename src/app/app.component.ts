@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { GameBoardComponent } from './game-board/game-board.component'
+import { GameBoardComponent } from '@/game-board/game-board.component'
 import { NumberInputComponent } from './number-input/number-input.component'
 import { GameStartComponent } from './game-start/game-start.component'
 import { GameActionsComponent } from './game-actions/game-actions.component'

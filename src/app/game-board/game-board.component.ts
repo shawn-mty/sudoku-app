@@ -111,7 +111,6 @@ export class GameBoardComponent {
       this.board[this.selectedRowIndex][this.selectedColIndex] = selectedNumber
 
       if (this.isBoardFull()) {
-        console.log('Board is full, validating the puzzle.')
         this.validate()
       }
     }
