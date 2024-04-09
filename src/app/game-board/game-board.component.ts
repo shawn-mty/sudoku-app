@@ -7,7 +7,7 @@ type CandidateCell = {
   [K in CandidateNumber]: boolean
 }
 type Board = Array<Array<number>>
-type BoardResponse = {
+export type BoardResponse = {
   board: Board
 }
 type ValidateResponse = {

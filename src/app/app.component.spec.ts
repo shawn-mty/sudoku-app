@@ -1,14 +1,32 @@
-import { render, fireEvent, screen, within } from '@testing-library/angular'
+import { render, screen, within } from '@testing-library/angular'
 import { TestBed } from '@angular/core/testing'
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import { userEvent } from '@testing-library/user-event'
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+  TestRequest,
+} from '@angular/common/http/testing'
 import { AppComponent } from './app.component'
 import { GameBoardComponent } from './game-board/game-board.component'
 import { NumberInputComponent } from './number-input/number-input.component'
 import { GameStartComponent } from './game-start/game-start.component'
-const { queryByTestId, findByTestId, getByTestId } = screen
+const { queryByTestId, findByTestId, getByTestId, findByText } = screen
+
+const dummyBoard = [
+  [6, 0, 0, 0, 0, 0, 4, 7, 0],
+  [1, 0, 3, 4, 0, 8, 0, 0, 9],
+  [0, 7, 0, 0, 6, 0, 0, 2, 0],
+  [2, 0, 0, 0, 3, 5, 0, 0, 0],
+  [0, 0, 0, 0, 9, 0, 2, 0, 0],
+  [7, 0, 9, 0, 2, 4, 0, 5, 0],
+  [0, 3, 1, 7, 0, 0, 9, 0, 2],
+  [8, 0, 2, 0, 5, 0, 0, 4, 0],
+  [9, 0, 7, 2, 0, 1, 0, 0, 5],
+]
 
 describe('AppComponent Integration Tests', () => {
   let httpMock: HttpTestingController
+  let boardRequest: TestRequest
 
   beforeEach(async () => {
     await render(AppComponent, {
@@ -19,28 +37,19 @@ describe('AppComponent Integration Tests', () => {
         HttpClientTestingModule,
       ],
     })
+
     httpMock = TestBed.inject(HttpTestingController)
+    const button = await screen.findByText(/Easy/i)
+    await userEvent.click(button)
+
+    boardRequest = httpMock.expectOne('https://sugoku.onrender.com/board?difficulty=easy')
+    boardRequest.flush({
+      board: dummyBoard,
+    })
   })
 
   it('should reflect the chosen difficulty in the API call and render the game board and number input components after game start', async () => {
-    const button = await screen.findByText(/Easy/i)
-    fireEvent.click(button)
-
-    const req = httpMock.expectOne('https://sugoku.onrender.com/board?difficulty=easy')
-    expect(req.request.method).toEqual('GET')
-    req.flush({
-      board: [
-        [6, 0, 0, 0, 0, 0, 4, 7, 0],
-        [1, 0, 3, 4, 0, 8, 0, 0, 9],
-        [0, 7, 0, 0, 6, 0, 0, 2, 0],
-        [2, 0, 0, 0, 3, 5, 0, 0, 0],
-        [0, 0, 0, 0, 9, 0, 2, 0, 0],
-        [7, 0, 9, 0, 2, 4, 0, 5, 0],
-        [0, 3, 1, 7, 0, 0, 9, 0, 2],
-        [8, 0, 2, 0, 5, 0, 0, 4, 0],
-        [9, 0, 7, 2, 0, 1, 0, 0, 5],
-      ],
-    })
+    expect(boardRequest.request.method).toEqual('GET')
 
     expect(queryByTestId('game-start')).toBeNull()
 
@@ -56,6 +65,63 @@ describe('AppComponent Integration Tests', () => {
     expect(within(gameActions).getByText(/Validate/i)).toBeVisible()
     expect(within(gameActions).getByText(/Auto Solve/i)).toBeVisible()
   })
+
+  it('should update a selected square with a normal number', async () => {
+    expect(queryByTestId('game-start')).toBeNull()
+
+    const gameBoard = await findByTestId('game-board')
+    await userEvent.click(within(gameBoard).getByTestId('cell-0-1'))
+
+    const numberInput = await findByTestId('number-input')
+    const numberButton = within(numberInput).getByText('5')
+    await userEvent.click(numberButton)
+
+    const numberText = within(within(gameBoard).getByTestId('cell-0-1')).getByText('5')
+    expect(numberText).toBeVisible()
+  })
+
+  // it('should update a selected square with multiple candidate numbers', async () => {
+  //   const cell = await screen.findByTestId('cell-0-1')
+  //   await userEvent.click(cell)
+  //   const numberInput = await screen.findByTestId('candidate-number-3')
+  //   await userEvent.click(numberInput)
+  //   const numberInput2 = await screen.findByTestId('candidate-number-7')
+  //   await userEvent.click(numberInput2)
+
+  //   expect(cell.textContent).toContain('3, 7')
+  // })
+
+  // it('should overwrite candidate numbers in a selected square with a normal number', async () => {
+  //   const cell = await screen.findByTestId('cell-0-1')
+  //   await userEvent.click(cell)
+  //   const numberButton = await screen.findByTestId('number-5')
+  //   await userEvent.click(numberButton)
+
+  //   expect(cell.textContent).toBe('5')
+  // })
+
+  // it('should reset a normal number in a square cell that is not part of the original board', async () => {
+  //   const cell = await screen.findByTestId('cell-0-2')
+  //   await userEvent.click(cell, { button: 2 }) // Right-click if needed
+
+  //   expect(cell.textContent).toBeEmpty()
+  // })
+
+  // it('should reset candidate numbers in a square cell that is not part of the original board', async () => {
+  //   const cell = await screen.findByTestId('cell-0-3')
+  //   await userEvent.click(cell, { button: 2 }) // Right-click if needed
+
+  //   expect(cell.textContent).toBeEmpty()
+  // })
+
+  // it("should validate the board and display a 'solved' status", async () => {
+  //   const validateButton = await screen.findByText(/Validate/i)
+  //   await userEvent.click(validateButton)
+  //   // Assume some text appears after validation
+  //   const status = await screen.findByText('Puzzle is correctly solved!')
+
+  //   expect(status).toBeVisible()
+  // })
 })
 
 /*
