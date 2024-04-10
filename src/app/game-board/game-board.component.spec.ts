@@ -69,8 +69,8 @@ describe('Gameboard Tests', () => {
   })
 
   it('should highlight correct cell when clicked', async () => {
-    const originalBoardCell = await findByTestId('cell-0-0')
-    const emptyCell = await findByTestId('cell-0-1')
+    const originalBoardCell = await findByTestId('cell-8-8')
+    const emptyCell = await findByTestId('cell-8-7')
 
     expect(emptyCell).toHaveClass('bg-gray-950')
     await userEvent.click(emptyCell)

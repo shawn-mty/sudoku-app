@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/angular'
-import { TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { userEvent } from '@testing-library/user-event'
 import {
   HttpClientTestingModule,
@@ -20,7 +20,7 @@ describe('AppComponent Integration Tests', () => {
     })
 
     httpMock = TestBed.inject(HttpTestingController)
-    const button = await screen.findByText(/Easy/i)
+    const button = await findByText(/Easy/i)
     await userEvent.click(button)
 
     boardRequest = httpMock.expectOne('https://sugoku.onrender.com/board?difficulty=easy')
@@ -73,7 +73,7 @@ describe('AppComponent Integration Tests', () => {
   })
 
   it('should update a selected square with multiple candidate numbers', async () => {
-    const cell = await screen.findByTestId('cell-0-2')
+    const cell = await findByTestId('cell-0-2')
     await insertCandidateNumbers(cell, '3', '7')
 
     expect(cell.textContent).toContain('3')
@@ -85,7 +85,7 @@ describe('AppComponent Integration Tests', () => {
     const candidateNum1 = '4'
     const candidateNum2 = '5'
     const normalNum = '9'
-    const cell = await screen.findByTestId(cellTestId)
+    const cell = await findByTestId(cellTestId)
     const gameBoard = getByTestId('game-board')
 
     await insertCandidateNumbers(cell, candidateNum1, candidateNum2)
@@ -145,10 +145,10 @@ describe('AppComponent Integration Tests', () => {
     const validateButton = await findByText(/Validate/i)
     await userEvent.click(validateButton)
     const validationRequest = httpMock.expectOne('https://sugoku.onrender.com/validate')
-    validationRequest.flush({ status: 'broken' })
+    validationRequest.flush({ status: 'unsolved' })
     expect(validationRequest.request.method).toEqual('POST')
 
-    expect(getByText(unsolvedStatus)).toBeVisible()
+    expect(await findByText(unsolvedStatus)).toBeVisible()
 
     await userEvent.click(getByText(/Auto Solver/i))
     const solveRequest = httpMock.expectOne('https://sugoku.onrender.com/solve')
@@ -164,21 +164,50 @@ describe('AppComponent Integration Tests', () => {
     expect(winningMessage).toBeVisible()
   })
 
-    it('should show correct states based on board statuses', async () => {
-    //     switch (this.status) {
-    //   case 'solved':
-    //     return 'Congrats, you win!'
-    //   case 'unsolved':
-    //     return 'Everything is right so far...'
-    //   case 'broken':
-    //     return 'At least one number broke along the way'
-    //   case 'unsolvable':
-    //     return 'Something broke, reset the board and trying again'
-    // }
-
-    const solvedStatus = 'Congrats, you win!'
-    const unsolvedStatus = 'Everything is right so far...'
+  it('should show broken state when there are incorrect cells and we validate', async () => {
     const brokenStatus = 'At least one number broke along the way'
+
+    const gameBoard = await findByTestId('game-board')
+    await insertNormalNumber(gameBoard, 'cell-7-6', '8')
+
+    await userEvent.click(getByText(/Validate/i))
+    const validationRequest = httpMock.expectOne('https://sugoku.onrender.com/validate')
+    validationRequest.flush({ status: 'broken' })
+    expect(validationRequest.request.method).toEqual('POST')
+
+    expect(await findByText(brokenStatus)).toBeVisible()
+  })
+
+  it('should show unsolvable state if the board has incorrect cells and we click autosolve', async () => {
     const unsolvableStatus = 'Something broke, reset the board and trying again'
+
+    const gameBoard = await findByTestId('game-board')
+    await insertNormalNumber(gameBoard, 'cell-7-8', '2')
+
+    await userEvent.click(getByText(/Auto Solver/i))
+    const solveRequest = httpMock.expectOne('https://sugoku.onrender.com/solve')
+    solveRequest.flush({ status: 'unsolvable' })
+    expect(solveRequest.request.method).toEqual('POST')
+
+    expect(await findByText(unsolvableStatus)).toBeVisible()
+  })
+
+  it('should reset the board when the reset button is clicked', async () => {
+    const gameBoard = await findByTestId('game-board')
+    const gameActions = getByTestId('game-actions')
+
+    for (let i = 1; i <= 3; i++) {
+      await insertNormalNumber(gameBoard, `cell-3-${i}`, '1')
+    }
+
+    const cell = await findByTestId('cell-3-1')
+    expect(await within(cell).findByText('1')).toBeVisible()
+
+    await userEvent.click(within(gameActions).getByText(/Reset/i))
+
+    for (let i = 1; i <= 3; i++) {
+      const cell = await findByTestId(`cell-3-${i}`)
+      expect(cell.textContent).toBe('')
+    }
   })
 })
