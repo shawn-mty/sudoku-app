@@ -36,6 +36,8 @@ export class GameBoardComponent {
   originalBoard: Board = []
   candidateBoard: CandidateCell[][] = []
   isLoading = false
+  isValidating = false
+  isSolving = false
   status: Status = 'unsolved'
   isStatusBouncing = false
 
@@ -169,6 +171,8 @@ export class GameBoardComponent {
   }
 
   validate(): void {
+    this.isValidating = true
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     })
@@ -187,6 +191,7 @@ export class GameBoardComponent {
           ) {
             this.bounceStatus()
           }
+          this.isValidating = false
         },
         error: (err) => {
           console.error('Validation error:', err)
@@ -195,6 +200,7 @@ export class GameBoardComponent {
   }
 
   autoSolve(): void {
+    this.isSolving = true
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     })
@@ -213,6 +219,8 @@ export class GameBoardComponent {
             this.bounceStatus()
             this.unselectCell()
           }
+
+          this.isSolving = false
         },
         error: (err) => {
           console.error('Auto solve error:', err)

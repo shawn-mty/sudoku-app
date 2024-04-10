@@ -3,16 +3,18 @@
     class="bg-fuchsia-900 hover-animate hover:bg-fuchsia-950 text-white font-bold py-2 px-4"
     (click)="solve.emit()"
   >
-    Auto Solver
+    <app-loading-spinner [isLoading]="isSolving" />
+    <span [class.invisible]="isSolving"> Auto Solver </span>
   </button>
   <button
     [class.invisible]="!hasGameStarted"
     [class.opacity-0]="!hasGameStarted"
     [class.opacity-100]="hasGameStarted"
-    class="transition-opacity duration-700 bg-fuchsia-800 hover-animate hover:bg-fuchsia-950 text-white font-bold py-2 px-4"
+    class="transition-opacity duration-700 ease-out bg-fuchsia-800 hover:bg-fuchsia-900 text-white font-bold py-2 px-4 relative"
     (click)="validate.emit()"
   >
-    Validate
+    <app-loading-spinner [isLoading]="isValidating" />
+    <span [class.invisible]="isValidating"> Validate </span>
   </button>
   <button
     class="bg-gray-800 hover-animate hover:bg-gray-900 text-white font-bold py-2 px-4"
