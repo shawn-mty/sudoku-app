@@ -1,3 +1,9 @@
+<app-game-actions
+  (validate)="validate()"
+  (solve)="autoSolve()"
+  (resetBoard)="resetBoard()"
+  [hasGameStarted]="hasGameStarted"
+/>
 <div *ngIf="loading" class="grid py-2 md:py-4 px-0 md:px-4 w-full max-w-2xl mx-auto md:gap-2">
   <div
     *ngFor="let row of [].constructor(9); let rowIndex = index"
@@ -38,16 +44,8 @@
     </div>
   </div>
 </div>
-<div class="min-h-12 flex justify-center pt-2" [ngClass]="{ 'animate-pulse': status === 'solved' }">
+<div class="min-h-12 flex justify-center py-4" [ngClass]="{ 'animate-pulse': status === 'solved' }">
   <span class="text-fuchsia-600 text-lg">
     {{ computedStatus }}
   </span>
-</div>
-<div class="flex justify-center">
-  <app-game-actions
-    (validate)="validate()"
-    (solve)="autoSolve()"
-    (resetBoard)="resetBoard()"
-    [hasGameStarted]="hasGameStarted"
-  />
 </div>

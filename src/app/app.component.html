@@ -2,6 +2,9 @@
   <div class="flex justify-center md:py-6 flex-wrap items-center">
     <app-game-start *ngIf="!hasChosenDifficulty" (difficultySelected)="fetchPuzzle($event)" />
     <div class="flex justify-center flex-col items-center">
+      <h1 *ngIf="hasChosenDifficulty" class="text-4xl font-bold mb-4 text-fuchsia-900 px-12 py-4">
+        Sudoku
+      </h1>
       <app-game-board [class.hidden]="!hasChosenDifficulty" />
     </div>
     <app-number-input
