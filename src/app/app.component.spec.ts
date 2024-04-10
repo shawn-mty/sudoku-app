@@ -1,13 +1,15 @@
 import { render, screen, within } from '@testing-library/angular'
-import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { TestBed } from '@angular/core/testing'
 import { userEvent } from '@testing-library/user-event'
 import {
   HttpClientTestingModule,
   HttpTestingController,
   TestRequest,
 } from '@angular/common/http/testing'
+
 import { AppComponent } from './app.component'
-const { queryByTestId, findByTestId, getByTestId, findByText, getByText } = screen
+const { queryByTestId, findByTestId, getByTestId, findByText, getByText, queryByRole, findByRole } =
+  screen
 import { dummyBoard, dummySolvedResponse } from '@/testData'
 
 describe('AppComponent Integration Tests', () => {
@@ -209,5 +211,20 @@ describe('AppComponent Integration Tests', () => {
       const cell = await findByTestId(`cell-3-${i}`)
       expect(cell.textContent).toBe('')
     }
+  })
+
+  fit("doesn't show validate button until board has been filled a little", async () => {
+    const gameBoard = await findByTestId('game-board')
+    const cellTestId = 'cell-6-4'
+
+    expect(queryByRole('button', { name: /Validate/i })).toBeNull()
+
+    await insertNormalNumber(gameBoard, cellTestId, '1')
+
+    expect(within(getByTestId(cellTestId)).getByText('1')).toBeVisible()
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const validateButton = await findByRole('button', { name: /Validate/i })
+    expect(validateButton).toBeVisible()
   })
 })

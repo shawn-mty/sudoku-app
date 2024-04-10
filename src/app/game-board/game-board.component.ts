@@ -55,7 +55,7 @@ export class GameBoardComponent {
   }
 
   get hasGameStarted() {
-    return this.isCellSelected() && this.status !== 'solved'
+    return this.hasBoardFilledAtAll() && this.status !== 'solved'
   }
 
   constructor(private http: HttpClient) {}
@@ -197,6 +197,22 @@ export class GameBoardComponent {
           console.error('Validation error:', err)
         },
       })
+  }
+
+  hasBoardFilledAtAll(): boolean {
+    const countNonZeroes = (array: number[][]) => {
+      let nonZeroCount = 0
+      for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array[i].length; j++) {
+          if (array[i][j] !== 0) {
+            nonZeroCount++
+          }
+        }
+      }
+      return nonZeroCount
+    }
+
+    return countNonZeroes(this.board) > countNonZeroes(this.originalBoard)
   }
 
   autoSolve(): void {
