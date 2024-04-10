@@ -4,7 +4,7 @@
   (resetBoard)="resetBoard()"
   [hasGameStarted]="hasGameStarted"
 />
-<div *ngIf="loading" class="grid py-2 md:py-4 px-0 md:px-4 w-full max-w-2xl mx-auto md:gap-2">
+<div *ngIf="isLoading" class="grid py-2 md:py-4 px-0 md:px-4 w-full max-w-2xl mx-auto md:gap-2">
   <div
     *ngFor="let row of [].constructor(9); let rowIndex = index"
     class="grid grid-cols-9 md:gap-2"
@@ -16,7 +16,7 @@
   </div>
 </div>
 <div
-  *ngIf="!loading"
+  *ngIf="!isLoading"
   class="grid py-2 md:py-4 px-0 md:px-4 w-full max-w-2xl mx-auto md:gap-2"
   data-testid="game-board"
 >

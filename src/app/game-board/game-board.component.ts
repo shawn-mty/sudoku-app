@@ -35,7 +35,7 @@ export class GameBoardComponent {
   board: Board = []
   originalBoard: Board = []
   candidateBoard: CandidateCell[][] = []
-  loading = false
+  isLoading = false
   status: Status = 'unsolved'
   isStatusBouncing = false
 
@@ -66,7 +66,7 @@ export class GameBoardComponent {
   }
 
   fetchBoard(difficulty: Difficulty): void {
-    this.loading = true
+    this.isLoading = true
     this.http
       .get<BoardResponse>(`https://sugoku.onrender.com/board?difficulty=${difficulty}`)
       .subscribe((response) => {
@@ -74,7 +74,7 @@ export class GameBoardComponent {
         this.originalBoard = response.board.map((innerArray: number[]) => [...innerArray])
 
         this.initializeCandidateBoard()
-        this.loading = false
+        this.isLoading = false
       })
   }
 
