@@ -50,12 +50,12 @@ export class GameBoardComponent {
       case 'broken':
         return 'At least one number broke along the way'
       case 'unsolvable':
-        return 'Something broke, reset the board and trying again'
+        return 'Something broke, reset the board and try again'
     }
   }
 
   get hasGameStarted() {
-    return this.hasBoardFilledAtAll() && this.status !== 'solved'
+    return this.board && this.hasBoardFilledAtAll() && this.status !== 'solved'
   }
 
   constructor(private http: HttpClient) {}

@@ -181,7 +181,7 @@ describe('AppComponent Integration Tests', () => {
   })
 
   it('should show unsolvable state if the board has incorrect cells and we click autosolve', async () => {
-    const unsolvableStatus = 'Something broke, reset the board and trying again'
+    const unsolvableStatus = 'Something broke, reset the board and try again'
 
     const gameBoard = await findByTestId('game-board')
     await insertNormalNumber(gameBoard, 'cell-7-8', '2')
@@ -213,7 +213,7 @@ describe('AppComponent Integration Tests', () => {
     }
   })
 
-  fit("doesn't show validate button until board has been filled a little", async () => {
+  it("doesn't show validate button until board has been filled a little", async () => {
     const gameBoard = await findByTestId('game-board')
     const cellTestId = 'cell-6-4'
 
