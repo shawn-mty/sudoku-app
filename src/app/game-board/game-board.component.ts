@@ -155,7 +155,7 @@ export class GameBoardComponent {
     return this.board.every((row) => row.every((cell) => cell !== 0))
   }
 
-  flashStatus(): void {
+  bounceStatus(): void {
     this.isStatusBouncing = true
     setTimeout(() => {
       this.isStatusBouncing = false
@@ -175,8 +175,11 @@ export class GameBoardComponent {
       .subscribe({
         next: (response) => {
           this.status = response.status
-          if (response.status === 'unsolved' && this.status === 'unsolved') {
-            this.flashStatus()
+          if (
+            (response.status === 'unsolved' && this.status === 'unsolved') ||
+            response.status === 'solved'
+          ) {
+            this.bounceStatus()
           }
         },
         error: (err) => {
