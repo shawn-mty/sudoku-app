@@ -96,7 +96,10 @@ export class GameBoardComponent {
   }
 
   cellClicked(rowIndex: number, colIndex: number): void {
-    if (rowIndex !== null && colIndex !== null && this.originalBoard[rowIndex][colIndex] !== 0) {
+    if (
+      (rowIndex !== null && colIndex !== null && this.originalBoard[rowIndex][colIndex] !== 0) ||
+      this.isBoardFull()
+    ) {
       return
     }
 
