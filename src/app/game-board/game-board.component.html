@@ -45,7 +45,7 @@
   </div>
 </div>
 <div class="min-h-12 flex justify-center py-4" [ngClass]="{ 'animate-pulse': status === 'solved' }">
-  <span class="text-fuchsia-600 text-lg">
+  <span class="text-fuchsia-600 text-lg status" [ngClass]="{ 'animate-bounce': isStatusBouncing }">
     {{ computedStatus }}
   </span>
 </div>

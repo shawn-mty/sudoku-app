@@ -35,8 +35,9 @@ export class GameBoardComponent {
   board: Board = []
   originalBoard: Board = []
   candidateBoard: CandidateCell[][] = []
-  loading: boolean = false
+  loading = false
   status: Status = 'unsolved'
+  isStatusBouncing = false
 
   get computedStatus() {
     switch (this.status) {
@@ -154,6 +155,13 @@ export class GameBoardComponent {
     return this.board.every((row) => row.every((cell) => cell !== 0))
   }
 
+  flashStatus(): void {
+    this.isStatusBouncing = true
+    setTimeout(() => {
+      this.isStatusBouncing = false
+    }, 500)
+  }
+
   validate(): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -167,6 +175,9 @@ export class GameBoardComponent {
       .subscribe({
         next: (response) => {
           this.status = response.status
+          if (response.status === 'unsolved' && this.status === 'unsolved') {
+            this.flashStatus()
+          }
         },
         error: (err) => {
           console.error('Validation error:', err)
