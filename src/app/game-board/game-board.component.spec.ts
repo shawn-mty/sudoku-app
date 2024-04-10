@@ -7,7 +7,7 @@ import {
   TestRequest,
 } from '@angular/common/http/testing'
 import { GameBoardComponent } from '@/game-board/game-board.component'
-const { findByTestId, findAllByText, getAllByText, findAllByTestId } = screen
+const { findByTestId, findAllByText, getAllByText, findAllByTestId, getByText } = screen
 import { dummyBoard, dummySolvedResponse } from '@/testData'
 
 describe('Gameboard Tests', () => {
@@ -66,6 +66,7 @@ describe('Gameboard Tests', () => {
     const loadingCells = await findAllByTestId('loading-cell')
     expect(loadingCells.length).toBe(81)
     expect(loadingCells[0]).toHaveClass('animate-pulse')
+    expect(getByText('Loading...')).toBeVisible()
   })
 
   it('should highlight correct cell when clicked', async () => {

@@ -42,6 +42,10 @@ export class GameBoardComponent {
   isStatusBouncing = false
 
   get computedStatus() {
+    if (this.isLoading) {
+      return 'Loading...'
+    }
+
     switch (this.status) {
       case 'solved':
         return 'Congrats, you win!'
