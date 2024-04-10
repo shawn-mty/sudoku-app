@@ -4,9 +4,12 @@ const { getByRole } = screen
 
 describe('GameActionsComponent', () => {
   it('should render buttons', async () => {
-    await render(GameActionsComponent)
+    const { fixture } = await render(GameActionsComponent)
+
+    fixture.componentInstance.hasGameStarted = true
+    fixture.detectChanges()
 
     expect(getByRole('button', { name: /Validate/i })).toBeVisible()
-    expect(getByRole('button', { name: /Auto Solve/i })).toBeVisible()
+    expect(getByRole('button', { name: /Auto Solver/i })).toBeVisible()
   })
 })

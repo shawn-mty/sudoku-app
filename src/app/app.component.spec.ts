@@ -24,6 +24,8 @@ describe('AppComponent Integration Tests', () => {
     await userEvent.click(button)
 
     boardRequest = httpMock.expectOne('https://sugoku.onrender.com/board?difficulty=easy')
+    expect(boardRequest.request.method).toEqual('GET')
+
     boardRequest.flush({
       board: dummyBoard,
     })
@@ -47,9 +49,7 @@ describe('AppComponent Integration Tests', () => {
     await userEvent.click(within(numberInput).getByText(num2))
   }
 
-  it('should reflect the chosen difficulty in the API call and render the game board and number input components after game start', async () => {
-    expect(boardRequest.request.method).toEqual('GET')
-
+  it('should render the game board and number input components after difficulty chosen', async () => {
     expect(queryByTestId('game-start')).toBeNull()
 
     const gameBoard = await findByTestId('game-board')
@@ -60,8 +60,8 @@ describe('AppComponent Integration Tests', () => {
     expect(within(numberInput).getByText(/Normal/i)).toBeVisible()
 
     const gameActions = getByTestId('game-actions')
-    expect(within(gameActions).getByText(/Validate/i)).toBeVisible()
-    expect(within(gameActions).getByText(/Auto Solve/i)).toBeVisible()
+    expect(within(gameActions).getByText(/Reset/i)).toBeVisible()
+    expect(within(gameActions).getByText(/Auto Solver/i)).toBeVisible()
   })
 
   it('should update a selected square with a normal number', async () => {
@@ -138,7 +138,9 @@ describe('AppComponent Integration Tests', () => {
   })
 
   it("should validate the board and display a 'solved' status", async () => {
-    expect(await findByText('You can do it!')).toBeVisible()
+    const unsolvedStatus = 'Everything is right so far...'
+
+    expect(await findByText(unsolvedStatus)).toBeVisible()
 
     const validateButton = await findByText(/Validate/i)
     await userEvent.click(validateButton)
@@ -146,9 +148,9 @@ describe('AppComponent Integration Tests', () => {
     validationRequest.flush({ status: 'broken' })
     expect(validationRequest.request.method).toEqual('POST')
 
-    expect(getByText('You can do it!')).toBeVisible()
+    expect(getByText(unsolvedStatus)).toBeVisible()
 
-    await userEvent.click(getByText(/Auto Solve/i))
+    await userEvent.click(getByText(/Auto Solver/i))
     const solveRequest = httpMock.expectOne('https://sugoku.onrender.com/solve')
     solveRequest.flush(dummySolvedResponse)
     expect(solveRequest.request.method).toEqual('POST')
