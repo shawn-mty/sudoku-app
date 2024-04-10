@@ -53,27 +53,10 @@ export class GameBoardComponent {
   }
 
   get hasGameStarted() {
-    return (
-      this.selectedRowIndex !== null && this.selectedColIndex !== null && this.status !== 'solved'
-    )
+    return this.isCellSelected() && this.status !== 'solved'
   }
 
   constructor(private http: HttpClient) {}
-
-  resetCellCandidateNumbers(): void {
-    if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
-      const cell = this.candidateBoard[this.selectedRowIndex][this.selectedColIndex]
-      Object.keys(cell).forEach((key) => {
-        cell[key as CandidateNumber] = false
-      })
-    }
-  }
-
-  resetCellNumber() {
-    if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
-      this.board[this.selectedRowIndex][this.selectedColIndex] = 0
-    }
-  }
 
   resetBoard() {
     this.board = this.originalBoard.map((innerArray: number[]) => [...innerArray])
@@ -82,7 +65,7 @@ export class GameBoardComponent {
     this.status = 'unsolved'
   }
 
-  fetchPuzzle(difficulty: Difficulty): void {
+  fetchBoard(difficulty: Difficulty): void {
     this.loading = true
     this.http
       .get<BoardResponse>(`https://sugoku.onrender.com/board?difficulty=${difficulty}`)
@@ -93,18 +76,6 @@ export class GameBoardComponent {
         this.initializeCandidateBoard()
         this.loading = false
       })
-  }
-
-  cellClicked(rowIndex: number, colIndex: number): void {
-    if (
-      (rowIndex !== null && colIndex !== null && this.originalBoard[rowIndex][colIndex] !== 0) ||
-      this.isBoardFull()
-    ) {
-      return
-    }
-
-    this.selectedRowIndex = rowIndex
-    this.selectedColIndex = colIndex
   }
 
   initializeCandidateBoard(): void {
@@ -127,13 +98,49 @@ export class GameBoardComponent {
       )
   }
 
-  updateCellWithSelectedCandidateNumber(selectedCandidateNumber: string): void {
-    if (this.selectedRowIndex !== null && this.selectedColIndex !== null) {
-      const currentCandidateCell = this.candidateBoard[this.selectedRowIndex][
-        this.selectedColIndex
-      ] as CandidateCell
-      currentCandidateCell[selectedCandidateNumber as CandidateNumber] = true
+  isCellSelected(): this is { selectedRowIndex: number; selectedColIndex: number } {
+    return this.selectedRowIndex !== null && this.selectedColIndex !== null
+  }
+
+  resetCellCandidateNumbers(): void {
+    if (!this.isCellSelected()) return
+
+    const cell = this.candidateBoard[this.selectedRowIndex][this.selectedColIndex]
+    Object.keys(cell).forEach((key) => {
+      cell[key as CandidateNumber] = false
+    })
+  }
+
+  resetCellNumber() {
+    if (!this.isCellSelected()) return
+
+    this.board[this.selectedRowIndex][this.selectedColIndex] = 0
+  }
+
+  cellClicked(rowIndex: number, colIndex: number): void {
+    if (
+      (rowIndex !== null && colIndex !== null && this.originalBoard[rowIndex][colIndex] !== 0) ||
+      this.isBoardFull()
+    ) {
+      return
     }
+
+    this.selectedRowIndex = rowIndex
+    this.selectedColIndex = colIndex
+  }
+
+  unselectCell(): void {
+    this.selectedRowIndex = null
+    this.selectedColIndex = null
+  }
+
+  updateCellWithSelectedCandidateNumber(selectedCandidateNumber: string): void {
+    if (!this.isCellSelected()) return
+
+    const currentCandidateCell = this.candidateBoard[this.selectedRowIndex][
+      this.selectedColIndex
+    ] as CandidateCell
+    currentCandidateCell[selectedCandidateNumber as CandidateNumber] = true
   }
 
   updateCellWithSelectedNumber(selectedNumber: number): void {
@@ -185,11 +192,6 @@ export class GameBoardComponent {
           console.error('Validation error:', err)
         },
       })
-  }
-
-  unselectCell(): void {
-    this.selectedRowIndex = null
-    this.selectedColIndex = null
   }
 
   autoSolve(): void {

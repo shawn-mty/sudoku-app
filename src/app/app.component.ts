@@ -30,8 +30,8 @@ export class AppComponent {
     this.GameBoard.resetCellNumber()
   }
 
-  fetchPuzzle(difficulty: Difficulty): void {
+  fetchBoard(difficulty: Difficulty): void {
     this.hasChosenDifficulty = true
-    this.GameBoard.fetchPuzzle(difficulty)
+    this.GameBoard.fetchBoard(difficulty)
   }
 }
