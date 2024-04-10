@@ -43,12 +43,18 @@ export class GameBoardComponent {
       case 'solved':
         return 'Congrats, you win!'
       case 'unsolved':
-        return "Let's go!"
+        return 'Everything is right so far...'
       case 'broken':
-        return 'Not quite, keep it up!'
+        return 'At least one number broke along the way'
       case 'unsolvable':
-        return 'Try resetting the board and starting over'
+        return 'Something broke, reset the board and trying again'
     }
+  }
+
+  get hasGameStarted() {
+    return (
+      this.selectedRowIndex !== null && this.selectedColIndex !== null && this.status !== 'solved'
+    )
   }
 
   constructor(private http: HttpClient) {}
@@ -171,7 +177,7 @@ export class GameBoardComponent {
     })
 
     const body = new URLSearchParams()
-    body.set('board', JSON.stringify(this.originalBoard))
+    body.set('board', JSON.stringify(this.board))
 
     this.http
       .post<SolveResponse>('https://sugoku.onrender.com/solve', body.toString(), { headers })
