@@ -10,6 +10,7 @@
     class="grid grid-cols-9 md:gap-2"
   >
     <div
+      data-testid="loading-cell"
       *ngFor="let col of [].constructor(9); let colIndex = index"
       class="border border-gray-600 flex justify-center items-center h-10 w-10 md:h-14 md:w-14 bg-gray-800 animate-pulse"
     ></div>
@@ -35,7 +36,11 @@
         {{ col }}
       </div>
       <div *ngIf="col === 0" class="flex flex-wrap justify-center md:gap-1">
-        <div *ngFor="let num of candidateNumbers" class="w-3 h-3 flex justify-center items-center">
+        <div
+          *ngFor="let num of candidateNumbers"
+          class="w-3 h-3 flex justify-center items-center"
+          data-testid="candidate-number"
+        >
           <span *ngIf="candidateBoard[rowIndex][colIndex][num] === true" class="text-xs/[6px]">{{
             num
           }}</span>

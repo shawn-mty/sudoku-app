@@ -163,4 +163,22 @@ describe('AppComponent Integration Tests', () => {
     const winningMessage = await screen.findByText('Congrats, you win!')
     expect(winningMessage).toBeVisible()
   })
+
+    it('should show correct states based on board statuses', async () => {
+    //     switch (this.status) {
+    //   case 'solved':
+    //     return 'Congrats, you win!'
+    //   case 'unsolved':
+    //     return 'Everything is right so far...'
+    //   case 'broken':
+    //     return 'At least one number broke along the way'
+    //   case 'unsolvable':
+    //     return 'Something broke, reset the board and trying again'
+    // }
+
+    const solvedStatus = 'Congrats, you win!'
+    const unsolvedStatus = 'Everything is right so far...'
+    const brokenStatus = 'At least one number broke along the way'
+    const unsolvableStatus = 'Something broke, reset the board and trying again'
+  })
 })
