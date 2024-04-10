@@ -78,8 +78,7 @@ export class GameBoardComponent {
   resetBoard() {
     this.board = this.originalBoard.map((innerArray: number[]) => [...innerArray])
     this.initializeCandidateBoard()
-    this.selectedRowIndex = null
-    this.selectedColIndex = null
+    this.unselectCell()
     this.status = 'unsolved'
   }
 
@@ -188,6 +187,11 @@ export class GameBoardComponent {
       })
   }
 
+  unselectCell(): void {
+    this.selectedRowIndex = null
+    this.selectedColIndex = null
+  }
+
   autoSolve(): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -202,6 +206,11 @@ export class GameBoardComponent {
         next: (response) => {
           this.board = response.solution
           this.status = response.status
+
+          if (this.status === 'solved') {
+            this.bounceStatus()
+            this.unselectCell()
+          }
         },
         error: (err) => {
           console.error('Auto solve error:', err)
