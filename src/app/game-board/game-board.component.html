@@ -14,7 +14,13 @@
     <div
       data-testid="loading-cell"
       *ngFor="let col of [].constructor(9); let colIndex = index"
-      class="border border-gray-600 flex justify-center items-center h-10 w-10 md:h-14 md:w-14 bg-gray-800 animate-pulse"
+      class="border border-gray-700 flex justify-center items-center h-10 w-10 md:h-14 md:w-14 bg-gray-800 animate-pulse"
+      [ngClass]="{
+        'border-r-4': (colIndex + 1) % 3 === 0,
+        'border-b-4': (rowIndex + 1) % 3 === 0,
+        'border-t-4': rowIndex % 3 === 0,
+        'border-l-4': colIndex % 3 === 0
+      }"
     ></div>
   </div>
 </div>
@@ -27,8 +33,12 @@
     <div
       *ngFor="let col of row; let colIndex = index"
       [attr.data-testid]="'cell-' + rowIndex + '-' + colIndex"
-      class="hover-animate border border-gray-600 flex flex-wrap content-center justify-center h-10 w-10 md:h-14 md:w-14 cursor-pointer hover:bg-gray-900"
+      class="hover-animate border border-gray-700 flex flex-wrap content-center justify-center h-10 w-10 md:h-14 md:w-14 cursor-pointer hover:bg-gray-900"
       [ngClass]="{
+        'border-r-4': (colIndex + 1) % 3 === 0,
+        'border-b-4': (rowIndex + 1) % 3 === 0,
+        'border-t-4': rowIndex % 3 === 0,
+        'border-l-4': colIndex % 3 === 0,
         'bg-gray-800': rowIndex === selectedRowIndex && colIndex === selectedColIndex,
         'bg-gray-950': rowIndex !== selectedRowIndex || colIndex !== selectedColIndex
       }"
